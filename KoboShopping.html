@@ -6,20 +6,22 @@
   </head>
   <body>
     <h1>Kobo Shopping</h1>
-    <div>Book prices: <input type='text' id='prices' size='20' value='266 245 228 273 286 290 315 247 247'></input>(separated by space)</div>
-    <div>Target bundle price: <input type='text' size='8' value='888'></input></div>
+    <div>Book prices: <input type='text' id='prices' size='100' value='266 245 228 273 286 290 315 247 247'></input>(separated by space)</div>
+    <div>Target bundle price: <input type='text' size='4' value='888'></input></div>
     <div><button id='go-btn'>go</button></div>
   </body>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
   <script>
     $(document).ready(function() {
         $( "#go-btn" ).click(function() {
-            var prices = $('#prices').val().split(' ');
+            var prices = $('#prices').val().split(' ').forEach(function(value, index, array) {
+              value = Number(value);
+            });
             var x = 0;
             var i;
             for (i = 0; i < prices.length; i++) {
                 alert('price=' + prices[i]);
-                x += Number(prices[i]);
+                x += prices[i];
                 alert('x=' + x);
             }
         });
