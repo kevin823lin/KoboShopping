@@ -8,12 +8,14 @@
     <h1>Kobo Shopping</h1>
     <div>Book prices: <input type='text'></input>(separated by space, comma, or semicolon)</div>
     <div>Target bundle price: <input type='text' placeholder='888'></input></div>
-    <div><button onclick=>go</button></div>
+    <div><button id='go-btn'>go</button></div>
   </body>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
   <script>
     $(document).ready(function() {
-        alert('ready');
+        $( "#go-btn" ).click(function() {
+            alert("Handler for .click() called." );
+        });
     });
   </script>
 </html>
