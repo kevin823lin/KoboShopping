@@ -16,9 +16,10 @@
         $( "#go-btn" ).click(function() {
             var prices = $('#prices').val().split(' ');
             var x = 0;
-            for (price in prices) {
-                alert('price=' + price);
-                x += price;
+            var i;
+            for (i = 0; i < prices.lenght; i++) {
+                alert('price=' + prices[i]);
+                x += prices[i];
                 alert('x=' + x);
             }
         });
