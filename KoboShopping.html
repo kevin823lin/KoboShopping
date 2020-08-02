@@ -20,10 +20,10 @@
             var x = 0;
             var i;
             for (i = 0; i < prices.length; i++) {
-                alert('price=' + prices[i]);
+                prices[i] = Number(prices[i]);
                 x += prices[i];
-                alert('x=' + x);
             }
+                alert('x=' + x);
         });
     });
   </script>
