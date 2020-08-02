@@ -17,8 +17,9 @@
             var prices = $('#prices').val().split(' ');
             var x = 0;
             for (price in prices) {
+                alert('price=' + price);
                 x += price;
-                alert(x);
+                alert('x=' + x);
             }
         });
     });
