@@ -6,7 +6,7 @@
   </head>
   <body>
     <h1>Kobo Shopping</h1>
-    <div>Book prices: <input type='text' width='20em'></input>(separated by space, comma, or semicolon)</div>
+    <div>Book prices: <input type='text' id='prices' width='20em' value='266 245 228 273 286 290 315 247 247'></input>(separated by space, comma, or semicolon)</div>
     <div>Target bundle price: <input type='text' width='8em' value='888'></input></div>
     <div><button id='go-btn'>go</button></div>
   </body>
@@ -14,7 +14,7 @@
   <script>
     $(document).ready(function() {
         $( "#go-btn" ).click(function() {
-            alert("Handler for .click() called." );
+            alert($('#prices').val());
         });
     });
   </script>
