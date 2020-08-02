@@ -14,9 +14,7 @@
   <script>
     $(document).ready(function() {
         $( "#go-btn" ).click(function() {
-            var prices = $('#prices').val().split(' ').forEach(function(value, index, array) {
-              value = Number(value);
-            });
+            var prices = $('#prices').val().split(' ');
             var x = 0;
             var i;
             for (i = 0; i < prices.length; i++) {
