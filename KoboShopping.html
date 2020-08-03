@@ -28,7 +28,19 @@
             var target = Number($('#target').val());
             solution_residual = _sum(prices);
             alert(solution_residual);
-            //_go(0, carts, prices, target);
+            _go(0, target);
+            var text = "";
+            for (i = 0; i < solution_carts.length; i++) {
+                text += "Cart " + i + ": ";
+                var j;
+                for (j = 0; j < solution_carts[i].length; j++) {
+                    text += j
+                    if (j < solution_carts.length - 1)
+                        text += " + ";
+                }
+                text += " = " + _sum(solution_carts[j]) + "\n";
+            }
+            alert(text);
         });
     });
     function _go(i, target) {
@@ -37,22 +49,34 @@
            for (j = 0; j < carts.length; j++) {
                var sum = _sum(carts[j]);
                if (sum >= target) {
-                   r++;
+                   rewards++;
                    residual += sum - target;
                }
            }
-           if (rewards > solution_rewards) {
+           if (rewards > solution_rewards || (rewards == solution_rewards && residual < solution_residual)) {
+               $.extend(true, solution_carts, carts);
            }           
        } else {
+           var j;
+           for (j = 0; j < carts.length; j++) {
+               carts[j].push(prices[i]);
+               _go(i + 1, target);
+               carts[j].pop();
+           }
+           var newCart = [];
+           newCart.push(prices[i]);
+           carts.push(newCart);
+           _go(i + 1, target);
+           carts.pop();
        }
     }
     function _sum(a) {
-      var i;
-      var s = 0;
-      for (i = 0; i < a.length; i++) {
-        s += a[i];
-      }
-      return s;
+        var i;
+        var s = 0;
+        for (i = 0; i < a.length; i++) {
+            s += a[i];
+        }
+        return s;
     }
   </script>
 </html>
