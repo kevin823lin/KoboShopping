@@ -36,17 +36,17 @@
             debugger;
             var mustbuys = url.searchParams.get("mustbuys");
             if (mustbuys != null) {
-                $('#must-buys').text(mustbuys);
+                $('#must-buys').val(mustbuys);
             }
             
             var optionals = url.searchParams.get("optionals");
             if (optionals != null) {
-                $('#optionals').text(optionals);
+                $('#optionals').val(optionals);
             }
 
             var target = url.searchParams.get("target");
             if (target != null) {
-                $('#target').text(target);
+                $('#target').val(target);
             }
             
             $( "#go-btn" ).click(function() {
