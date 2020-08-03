@@ -54,21 +54,21 @@
             var url = new URL(window.location);
             debugger;
             var mustbuys = url.searchParams.get("mustbuys");
-            if (mustbuys != null) {
+            if (mustbuys) {
                 $('#must-buys').val(mustbuys);
             }
             
             var optionals = url.searchParams.get("optionals");
-            if (optionals != null) {
+            if (optionals) {
                 $('#optionals').val(optionals);
             }
 
             var target = url.searchParams.get("target");
-            if (target != null) {
+            if (target) {
                 $('#target').val(target);
             }
             
-            if ((mustbuys != null || optionals != null) && target != null) {
+            if ((mustbuys || optionals) && target) {
                 _calc(mustbuys.split(' '), optionals.split(' '), target);
                 //$('#result-table').DataTable();
             }
