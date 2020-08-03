@@ -35,6 +35,8 @@
         var carts = [];
         var books = [];
         $(document).ready(function() {
+            const queryString = window.location.search;
+            alert(queryString);
             $( "#go-btn" ).click(function() {
                 books = [];
                 var mustbuys = $('#must-buys').val().split(' ');
