@@ -54,7 +54,7 @@
                    waste += sum - target;
                }
            }
-           if (rewards > solution_rewards || (rewards == solution_rewards && residual < solution_waste)) {
+           if (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste)) {
                $.extend(true, solution_carts, carts);
            }           
        } else {
