@@ -49,6 +49,10 @@
                 $('#target').val(target);
             }
             
+            if ((mustbuys != null || optionals != null) && target != null) {
+                _calc(mustbuys.split(' '), optionals.split(' '), target);
+            }
+            
             $( "#go-btn" ).click(function() {
                 var mustbuys = $('#must-buys').val();
                 var optionals = $('#optionals').val();
