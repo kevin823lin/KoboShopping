@@ -12,6 +12,7 @@
         <div>想買書價 Prices of must-buy books: <input type='text' id='must-buys' size='60'></input>(用空白分隔 separated by spaces)</div>
         <div>獎勵門檻 Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
         <div><button id='go-btn'>計算</button></div>
+        <div id='result'></div>
         <div>說明:
             <ol>
                 <li>例如: 這次有三本書想買，價格分別為222元、333元、666元。則可在「可買可不買書價」中填入"222 333 666"。</li>
@@ -33,7 +34,6 @@
         
         $(document).ready(function() {
             var url = new URL(window.location);
-            debugger;
             var mustbuys = url.searchParams.get("mustbuys");
             if (mustbuys != null) {
                 $('#must-buys').val(mustbuys);
@@ -104,7 +104,7 @@
                 }
                 text += "\n";
             }
-            alert(text);
+            $('#result').text(text);
         }
         
         function _go(i, target) {
