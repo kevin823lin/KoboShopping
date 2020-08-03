@@ -31,6 +31,7 @@
                 <li>「可下次再買」就是剩下湊不滿的書。</li>
                 <li>程式會找出多餘金額總和最少的拆單方式，換言之，「可下次再買」的金額會最多(方便下次湊滿門檻)</li>
                 <li>若您的購書清單中，有幾本書是這次一定要買到的，則輸入到「必買書價」中，同樣用空白分隔。「一般書價」中的書表示這次可買可不買。</li>
+                <li>購物車結果中標註星號*的書價為必買書價。
                 <li>「必買書價」中的書，一定不會出現在「下次再買」名單中。</li>
                 <li>本程式以JavaScript撰寫，存放在GitHub的靜態頁面，所有運算皆在使用者瀏覽器中執行，而且不會傳輸任何資料，請放心使用。</li>
             </ol>
@@ -51,6 +52,7 @@
         
         $(document).ready(function() {
             var url = new URL(window.location);
+            debugger;
             var mustbuys = url.searchParams.get("mustbuys");
             if (mustbuys != null) {
                 $('#must-buys').val(mustbuys);
@@ -104,7 +106,7 @@
             carts = [];
             _go(0, target);
             
-            var html = "<div>購物車安排方式 Your solution (星號*為想買書價 * marks prices for must-buys)</div>";
+            var html = "<div>購物車安排方式 Your solution</div>";
             html += "<table id='result-table' style='text-align:center;'><thead><tr><th>購物車 Cart</th><th>書價組合 Combination of book prices</th><th>總價 Sum</th><th>多餘金額 Exceeds</th></tr></thead><tbody>";
             for (i = 0; i < solution_carts.length; i++) {
                 var sum = _sum(solution_carts[i]);
