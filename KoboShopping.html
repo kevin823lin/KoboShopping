@@ -19,10 +19,6 @@
                 <li>「浪費金額」是指購物車總額超過獎勵門檻的部分。例如，若某筆購物車共1000元，而獎勵門檻為888元，則「浪費」了1000-888=112元。</li>
                 <li>通常會有不只一種拆單方式，程式會選「浪費」最少金額的方式</li>
                 <li>通常會有一輛購物車的金額未達獎勵門檻。這輛購物車內的書可等到下次累積新的想買書名單後再來買。</li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
             </ol>
         </div>
     </body>
@@ -35,55 +31,58 @@
         var carts = [];
         var books = [];
         $(document).ready(function() {
-            const queryString = window.location;
-            alert(queryString);
             $( "#go-btn" ).click(function() {
-                books = [];
                 var mustbuys = $('#must-buys').val().split(' ');
-                var i;
-                for (i = 0; i < mustbuys.length; i++) {
-                    var p = Number(mustbuys[i]);
-                    if (p > 0)
-                        books.push({ mustbuy: true, price: p});
-                }
                 var optionals = $('#optionals').val().split(' ');
-                for (i = 0; i < optionals.length; i++) {
-                    var p = Number(optionals[i]);
-                    if (p > 0)
-                        books.push({ mustbuy: false, price: p});
-                }
-                
                 var target = Number($('#target').val());
-                solution_waste = _sum(books);
-
-                solution_carts = [];
-                solution_rewards = -1;
-                solution_waste = Number.MAX_SAFE_INTEGER;
-                solution_mustbuy_left = 0;
-                carts = [];
-                _go(0, target);
                 
-                var text = "購物車安排方式 Your solution (星號*為想買書價 * marks prices for must-buys):\n";
-                for (i = 0; i < solution_carts.length; i++) {
-                    text += "購物車 Cart " + (i + 1) + ": ";
-                    var j;
-                    for (j = 0; j < solution_carts[i].length; j++) {
-                        text += solution_carts[i][j].price;
-                        if (solution_carts[i][j].mustbuy)
-                            text += "*";
-                        if (j < solution_carts[i].length - 1)
-                            text += " + ";
-                    }
-                    var sum = _sum(solution_carts[i]);
-                    text += " = " + sum;
-                    if (sum < target) {
-                        text += " (不足" + target + "，可下次再買 less than " + target + ", can be postponed)";
-                    }
-                    text += "\n";
-                }
-                alert(text);
+                _calc(mustbuys, optionals, target);
             });
         });
+        function _calc(mustbuys, optionals, target) {
+            books = [];
+            var i;
+            for (i = 0; i < mustbuys.length; i++) {
+                var p = Number(mustbuys[i]);
+                if (p > 0)
+                    books.push({ mustbuy: true, price: p});
+            }
+            for (i = 0; i < optionals.length; i++) {
+                var p = Number(optionals[i]);
+                if (p > 0)
+                    books.push({ mustbuy: false, price: p});
+            }
+            
+            solution_waste = _sum(books);
+
+            solution_carts = [];
+            solution_rewards = -1;
+            solution_waste = Number.MAX_SAFE_INTEGER;
+            solution_mustbuy_left = 0;
+            carts = [];
+            _go(0, target);
+            
+            var text = "購物車安排方式 Your solution (星號*為想買書價 * marks prices for must-buys):\n";
+            for (i = 0; i < solution_carts.length; i++) {
+                text += "購物車 Cart " + (i + 1) + ": ";
+                var j;
+                for (j = 0; j < solution_carts[i].length; j++) {
+                    text += solution_carts[i][j].price;
+                    if (solution_carts[i][j].mustbuy)
+                        text += "*";
+                    if (j < solution_carts[i].length - 1)
+                        text += " + ";
+                }
+                var sum = _sum(solution_carts[i]);
+                text += " = " + sum;
+                if (sum < target) {
+                    text += " (不足" + target + "，可下次再買 less than " + target + ", can be postponed)";
+                }
+                text += "\n";
+            }
+            alert(text);
+        }
+        
         function _go(i, target) {
             if (i == books.length) {
                 var rewards = 0, waste = 0, mustbuy_left = 0, j = 0;
