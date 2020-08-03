@@ -14,7 +14,7 @@
   <script>
     var solution_carts = [];
     var solution_rewards = -1;
-    var solution_residual = Number.MAX_SAFE_INTEGER;
+    var solution_waste = Number.MAX_SAFE_INTEGER;
     var carts = [];
     var prices = [];
 
@@ -27,7 +27,7 @@
                 prices.push(Number(px[i]));
             }
             var target = Number($('#target').val());
-            solution_residual = _sum(prices);
+            solution_waste = _sum(prices);
             //alert(solution_residual);
             _go(0, target);
             var text = "";
@@ -46,25 +46,26 @@
     });
     function _go(i, target) {
        if (i == prices.length) {
-           var rewards = 0, residual = 0, j = 0;
+           var rewards = 0, waste = 0, j = 0;
            for (j = 0; j < carts.length; j++) {
                var sum = _sum(carts[j]);
                if (sum >= target) {
                    rewards++;
-                   residual += sum - target;
-               } else {
-                   residual += sum;
+                   waste += sum - target;
                }
            }
-           if (rewards > solution_rewards || (rewards == solution_rewards && residual < solution_residual)) {
+           if (rewards > solution_rewards || (rewards == solution_rewards && residual < solution_waste)) {
                $.extend(true, solution_carts, carts);
            }           
        } else {
            var j;
            for (j = 0; j < carts.length; j++) {
-               carts[j].push(prices[i]);
-               _go(i + 1, target);
-               carts[j].pop();
+               var sum = _sum(carts[j]);
+               if (sum < target) {
+                   carts[j].push(prices[i]);
+                   _go(i + 1, target);
+                   carts[j].pop();
+               }
            }
            var newCart = [];
            newCart.push(prices[i]);
