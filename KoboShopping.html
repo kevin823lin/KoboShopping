@@ -22,6 +22,7 @@
         $( "#go-btn" ).click(function() {
             var px = $('#prices').val().split(' ');
             var i;
+            prices = [];
             for (i = 0; i < px.length; i++) {
                 prices.push(Number(px[i]));
             }
