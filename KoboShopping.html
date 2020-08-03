@@ -86,10 +86,13 @@
         function _calc(mustbuys, optionals, target) {
             books = [];
             var i;
+            solution_mustbuy_left = 0;
             for (i = 0; i < mustbuys.length; i++) {
                 var p = Number(mustbuys[i]);
-                if (p > 0)
+                if (p > 0) {
                     books.push({ mustbuy: true, price: p});
+                    solution_mustbuy_left++;
+                }
             }
             for (i = 0; i < optionals.length; i++) {
                 var p = Number(optionals[i]);
@@ -102,7 +105,6 @@
             solution_carts = [];
             solution_rewards = -1;
             solution_waste = Number.MAX_SAFE_INTEGER;
-            solution_mustbuy_left = 0;
             carts = [];
             _go(0, target);
             
@@ -161,7 +163,7 @@
                     }
                 }
                 
-                if (mustbuy_left == 0 && (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste))) {
+                if (mustbuy_left < solution_mustbuy_left && (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste))) {
                     solution_carts = [];
                     $.extend(true, solution_carts, carts);
                     solution_rewards = rewards;
