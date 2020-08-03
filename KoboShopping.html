@@ -163,7 +163,7 @@
                     }
                 }
                 
-                if (mustbuy_left < solution_mustbuy_left && (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste))) {
+                if (mustbuy_left <= solution_mustbuy_left && (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste))) {
                     solution_carts = [];
                     $.extend(true, solution_carts, carts);
                     solution_rewards = rewards;
