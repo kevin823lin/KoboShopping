@@ -23,8 +23,21 @@
             _go(0, carts, prices);
         });
     });
-    function _go(i, carts, prices) {
-       if (
+    function _go(i, carts, prices, rewards, target) {
+       if (i == prices.length) {
+           var r = 0, j = 0;
+           for (j = 0; j < carts.length; j++) {
+               var sum = 0, k = 0;
+               for (k = 0; k < carts[j].length; k++) {
+                   sum += carts[j][k];
+               }
+               if (sum >= target) {
+                   r++; 
+               }
+           }
+           
+       } else {
+       }
     }
   </script>
 </html>
