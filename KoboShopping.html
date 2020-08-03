@@ -28,7 +28,7 @@
             }
             var target = Number($('#target').val());
             solution_residual = _sum(prices);
-            alert(solution_residual);
+            //alert(solution_residual);
             _go(0, target);
             var text = "";
             for (i = 0; i < solution_carts.length; i++) {
@@ -52,6 +52,8 @@
                if (sum >= target) {
                    rewards++;
                    residual += sum - target;
+               } else {
+                   residual += sum;
                }
            }
            if (rewards > solution_rewards || (rewards == solution_rewards && residual < solution_residual)) {
