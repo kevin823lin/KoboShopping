@@ -39,7 +39,12 @@
                     if (j < solution_carts.length - 1)
                         text += " + ";
                 }
-                text += " = " + _sum(solution_carts[j]) + "\n";
+                var sum = _sum(solution_carts[i]);
+                text += " = " + sum;
+                if (sum < target) {
+                    text += " (less than " + target + ", can be delayed)";
+                }
+                text += "\n";
             }
             alert(text);
         });
