@@ -33,6 +33,7 @@
         
         $(document).ready(function() {
             var url = new URL(window.location);
+            debugger;
             var mustbuys = url.searchParams.get("mustbuys");
             if (mustbuys != null) {
                 $('#must-buys').text(mustbuys);
