@@ -1,93 +1,95 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Kobo Shopping</title>
-  </head>
-  <body>
-    <h1>Kobo Shopping</h1>
-    <div>Book prices: <input type='text' id='prices' size='100' value='266 245 228 273 286 290 315 247 247'></input>(separated by space)</div> <!--   -->
-    <div>Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
-    <div><button id='go-btn'>go</button></div>
-  </body>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
-  <script>
-    var solution_carts = [];
-    var solution_rewards = -1;
-    var solution_waste = Number.MAX_SAFE_INTEGER;
-    var carts = [];
-    var prices = [];
+    <head>
+        <meta charset="utf-8">
+        <script data-ad-client="ca-pub-1041865931422336" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <title>Kobo Shopping</title>
+    </head>
+    <body>
+        <h1>Kobo 單筆滿額贈點最佳化</h1>
+        <h1>Kobo Shopping Reward Optimization</h1>
+        <div>必買書價 Prices of must-buy books: <input type='text' id='must-buys' size='60'></input>(用空白分隔 separated by spaces)</div>
+        <div>可買可不買書價 Prices of optional books: <input type='text' id='must-buys' size='60'></input>(用空白分隔 separated by spaces)</div>
+        <div>購物車總價門檻 Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
+        <div><button id='go-btn'>計算</button></div>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+    <script>
+        var solution_carts = [];
+        var solution_rewards = -1;
+        var solution_waste = Number.MAX_SAFE_INTEGER;
+        var carts = [];
+        var prices = [];
+        $(document).ready(function() {
+            $( "#go-btn" ).click(function() {
+                var px = $('#prices').val().split(' ');
+                var i;
+                prices = [];
+                for (i = 0; i < px.length; i++) {
+                    prices.push(Number(px[i]));
+                }
+                var target = Number($('#target').val());
+                solution_waste = _sum(prices);
 
-    $(document).ready(function() {
-        $( "#go-btn" ).click(function() {
-            var px = $('#prices').val().split(' ');
-            var i;
-            prices = [];
-            for (i = 0; i < px.length; i++) {
-                prices.push(Number(px[i]));
-            }
-            var target = Number($('#target').val());
-            solution_waste = _sum(prices);
-            //alert(solution_residual);
-            _go(0, target);
-            var text = "Your solution:\n";
-            for (i = 0; i < solution_carts.length; i++) {
-                text += "Cart " + (i + 1) + ": ";
-                var j;
-                for (j = 0; j < solution_carts[i].length; j++) {
-                    text += solution_carts[i][j];
-                    if (j < solution_carts[i].length - 1)
-                        text += " + ";
+                _go(0, target);
+                var text = "Your solution:\n";
+                for (i = 0; i < solution_carts.length; i++) {
+                    text += "Cart " + (i + 1) + ": ";
+                    var j;
+                    for (j = 0; j < solution_carts[i].length; j++) {
+                        text += solution_carts[i][j];
+                        if (j < solution_carts[i].length - 1)
+                            text += " + ";
+                    }
+                    var sum = _sum(solution_carts[i]);
+                    text += " = " + sum;
+                    if (sum < target) {
+                        text += " (less than " + target + ", can be delayed)";
+                    }
+                    text += "\n";
                 }
-                var sum = _sum(solution_carts[i]);
-                text += " = " + sum;
-                if (sum < target) {
-                    text += " (less than " + target + ", can be delayed)";
-                }
-                text += "\n";
-            }
-            alert(text);
+                alert(text);
+            });
         });
-    });
-    function _go(i, target) {
-       if (i == prices.length) {
-           var rewards = 0, waste = 0, j = 0;
-           for (j = 0; j < carts.length; j++) {
-               var sum = _sum(carts[j]);
-               if (sum >= target) {
-                   rewards++;
-                   waste += sum - target;
-               }
-           }
-           if (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste)) {
-               $.extend(true, solution_carts, carts);
-               solution_rewards = rewards;
-               solution_waste = waste;
-           }           
-       } else {
-           var j;
-           for (j = 0; j < carts.length; j++) {
-               var sum = _sum(carts[j]);
-               if (sum < target) {
-                   carts[j].push(prices[i]);
-                   _go(i + 1, target);
-                   carts[j].pop();
-               }
-           }
-           var newCart = [];
-           newCart.push(prices[i]);
-           carts.push(newCart);
-           _go(i + 1, target);
-           carts.pop();
-       }
-    }
-    function _sum(a) {
-        var i;
-        var s = 0;
-        for (i = 0; i < a.length; i++) {
-            s += a[i];
+        function _go(i, target) {
+            if (i == prices.length) {
+                var rewards = 0, waste = 0, j = 0;
+                for (j = 0; j < carts.length; j++) {
+                    var sum = _sum(carts[j]);
+                    if (sum >= target) {
+                        rewards++;
+                        waste += sum - target;
+                    }
+                }
+                if (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste)) {
+                    $.extend(true, solution_carts, carts);
+                    solution_rewards = rewards;
+                    solution_waste = waste;
+                }
+            } else {
+                var j;
+                for (j = 0; j < carts.length; j++) {
+                    var sum = _sum(carts[j]);
+                    if (sum < target) {
+                        carts[j].push(prices[i]);
+                        _go(i + 1, target);
+                        carts[j].pop();
+                    }
+                }
+                var newCart = [];
+                newCart.push(prices[i]);
+                carts.push(newCart);
+                _go(i + 1, target);
+                carts.pop();
+            }
         }
-        return s;
-    }
-  </script>
+        function _sum(a) {
+            var i;
+            var s = 0;
+            for (i = 0; i < a.length; i++) {
+                s += a[i];
+            }
+            return s;
+        }
+    </script>
 </html>
