@@ -94,7 +94,7 @@
             _go(0, target);
             
             var html = "<div>購物車安排方式 Your solution (星號*為想買書價 * marks prices for must-buys)</div>";
-            html += "<table id='result-table'><tr><th>購物車 Cart</th><th>書價組合 Combination of book prices</th><th>總價 Sum</th><th>多餘金額 Exceeds</th>";
+            html += "<table id='result-table'><thead><tr><th>購物車 Cart</th><th>書價組合 Combination of book prices</th><th>總價 Sum</th><th>多餘金額 Exceeds</th></tr></thead><tbody>";
             for (i = 0; i < solution_carts.length; i++) {
                 var sum = _sum(solution_carts[i]);
                 if (sum >= target) {
@@ -126,6 +126,7 @@
                     html += "</td><td>" + sum + "</td><td></td></tr>";
                 }
             }
+            html += "</tbody></table>";
 
             $('#result').html(html);
         }
