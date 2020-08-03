@@ -174,11 +174,11 @@
                 var j;
                 for (j = 0; j < carts.length; j++) {
                     var sum = _sum(carts[j]);
-                    if (sum < target) {
+                    //if (sum < target) {
                         carts[j].push(books[i]);
                         _go(i + 1, target);
                         carts[j].pop();
-                    }
+                    //}
                 }
                 var newCart = [];
                 newCart.push(books[i]);
