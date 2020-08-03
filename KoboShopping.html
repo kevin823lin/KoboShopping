@@ -50,8 +50,8 @@
             }
             
             $( "#go-btn" ).click(function() {
-                var mustbuys = $('#must-buys').val().split(' ');
-                var optionals = $('#optionals').val().split(' ');
+                var mustbuys = $('#must-buys').val();
+                var optionals = $('#optionals').val();
                 var target = Number($('#target').val());
                 var data = { mustbuys: mustbuys, optionals: optionals, target: target };
                 window.location = '/KoboShopping.html?' + $.param(data);
