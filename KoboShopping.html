@@ -88,6 +88,7 @@
                 
                 
                 if (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste)) {
+                    solution_carts = [];
                     $.extend(true, solution_carts, carts);
                     solution_rewards = rewards;
                     solution_waste = waste;
