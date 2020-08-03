@@ -41,6 +41,11 @@
                 var target = Number($('#target').val());
                 solution_waste = _sum(books);
 
+                solution_carts = [];
+                solution_rewards = -1;
+                solution_waste = Number.MAX_SAFE_INTEGER;
+                solution_mustbuy_left = 0;
+                carts = [];
                 _go(0, target);
                 
                 var text = "Your solution:\n";
