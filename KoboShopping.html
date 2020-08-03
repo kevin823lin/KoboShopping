@@ -8,10 +8,23 @@
     <body>
         <h1>Kobo 單筆滿額贈點最佳化</h1>
         <h1>Kobo Shopping Reward Optimization</h1>
-        <div>必買書價 Prices of must-buy books: <input type='text' id='must-buys' size='60'></input>(用空白分隔 separated by spaces)</div>
+        <div>想買書價 Prices of must-buy books: <input type='text' id='must-buys' size='60'></input>(用空白分隔 separated by spaces)</div>
         <div>可買可不買書價 Prices of optional books: <input type='text' id='optionals' size='60'></input>(用空白分隔 separated by spaces)</div>
-        <div>購物車總價門檻 Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
+        <div>獎勵門檻 Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
         <div><button id='go-btn'>計算</button></div>
+        <div>說明:
+            <ol>
+                <li>例如: 這次有三本書想買，價格分別為222元、333元、666元。則可在「可買可不買書價」中填入"222 333 666"。</li>
+                <li>最近Kobo獎勵活動通常是「滿888送323點」，則在「獎勵門檻」中填入"888"</li>
+                <li>「浪費金額」是指購物車總額超過獎勵門檻的部分。例如，若某筆購物車共1000元，而獎勵門檻為888元，則「浪費」了1000-888=112元。</li>
+                <li>通常會有不只一種拆單方式，程式會選「浪費」最少金額的方式</li>
+                <li>通常會有一輛購物車的金額未達獎勵門檻。這輛購物車內的書可等到下次累積新的想買書名單後再來買。</li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ol>
+        </div>
     </body>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
     <script>
@@ -48,9 +61,9 @@
                 carts = [];
                 _go(0, target);
                 
-                var text = "Your solution:\n";
+                var text = "購物車安排方式 Your solution (星號*為想買書價 * marks prices for must-buys):\n";
                 for (i = 0; i < solution_carts.length; i++) {
-                    text += "Cart " + (i + 1) + ": ";
+                    text += "購物車 Cart " + (i + 1) + ": ";
                     var j;
                     for (j = 0; j < solution_carts[i].length; j++) {
                         text += solution_carts[i][j].price;
@@ -62,7 +75,7 @@
                     var sum = _sum(solution_carts[i]);
                     text += " = " + sum;
                     if (sum < target) {
-                        text += " (less than " + target + ", can be delayed)";
+                        text += " (不足" + target + "，可下次再買 less than " + target + ", can be postponed)";
                     }
                     text += "\n";
                 }
@@ -84,8 +97,7 @@
                             }
                         }
                     }
-                }
-                
+                }                
                 
                 if (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste)) {
                     solution_carts = [];
