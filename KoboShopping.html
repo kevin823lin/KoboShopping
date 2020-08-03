@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <script data-ad-client="ca-pub-1041865931422336" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
         <title>Kobo Shopping</title>
     </head>
     <body>
@@ -15,14 +16,17 @@
         <div>說明:
             <ol>
                 <li>例如: 這次有三本書想買，價格分別為222元、333元、666元。則可在「可買可不買書價」中填入"222 333 666"。</li>
-                <li>最近Kobo獎勵活動通常是「滿888送323點」，則在「獎勵門檻」中填入"888"</li>
-                <li>「浪費金額」是指購物車總額超過獎勵門檻的部分。例如，若某筆購物車共1000元，而獎勵門檻為888元，則「浪費」了1000-888=112元。</li>
-                <li>通常會有不只一種拆單方式，程式會選「浪費」最少金額的方式</li>
+                <li>最近(2020年8月)Kobo獎勵活動通常是「滿888送323點」，故在「獎勵門檻」中填入"888"</li>
+                <li>「多餘金額」是指購物車總額超過獎勵門檻的部分。例如，若某筆購物車共1000元，而獎勵門檻為888元，則多餘金額為 1000 - 888 = 112元。</li>
+                <li>通常會有不只一種拆單方式，程式會選擇各購物車中多餘金額總和最少的方式</li>
                 <li>通常會有一輛購物車的金額未達獎勵門檻。這輛購物車內的書可等到下次累積新的想買書名單後再來買。</li>
             </ol>
         </div>
     </body>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+  
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+
     <script>
         var solution_carts = [];
         var solution_rewards = -1;
@@ -50,6 +54,7 @@
             
             if ((mustbuys != null || optionals != null) && target != null) {
                 _calc(mustbuys.split(' '), optionals.split(' '), target);
+                $('#result-table').DataTable();
             }
             
             $( "#go-btn" ).click(function() {
@@ -86,7 +91,7 @@
             _go(0, target);
             
             var html = "<div>購物車安排方式 Your solution (星號*為想買書價 * marks prices for must-buys)</div>";
-            html += "<table><tr><th>購物車 Cart</th><th>書價組合 Combination of book prices</th><th>總價 Sum</th><th>多餘金額 Exceeds</th>";
+            html += "<table id='result-table'><tr><th>購物車 Cart</th><th>書價組合 Combination of book prices</th><th>總價 Sum</th><th>多餘金額 Exceeds</th>";
             for (i = 0; i < solution_carts.length; i++) {
                 var sum = _sum(solution_carts[i]);
                 if (sum >= target) {
