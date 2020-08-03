@@ -7,37 +7,52 @@
   <body>
     <h1>Kobo Shopping</h1>
     <div>Book prices: <input type='text' id='prices' size='100' value='266 245'></input>(separated by space)</div> <!--  228 273 286 290 315 247 247 -->
-    <div>Target bundle price: <input type='text' size='4' value='888'></input></div>
+    <div>Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
     <div><button id='go-btn'>go</button></div>
   </body>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
   <script>
+    var solution_carts = [];
+    var solution_rewards = 0;
+    var solution_residual = 0;
+    var carts = [];
+    var prices = [];
+
     $(document).ready(function() {
         $( "#go-btn" ).click(function() {
-            var prices = $('#prices').val().split(' ');
+            var px = $('#prices').val().split(' ');
             var i;
-            for (i = 0; i < prices.length; i++) {
-                prices[i] = Number(prices[i]);
+            for (i = 0; i < px.length; i++) {
+                prices.push(Number(px[i]));
             }
-            var carts = [];
-            _go(0, carts, prices);
+            var target = Number($('#target').val());
+            solution_residual = _sum(prices);
+            alert(solution_residual);
+            //_go(0, carts, prices, target);
         });
     });
-    function _go(i, carts, prices, rewards, target) {
+    function _go(i, target) {
        if (i == prices.length) {
-           var r = 0, j = 0;
+           var rewards = 0, residual = 0, j = 0;
            for (j = 0; j < carts.length; j++) {
-               var sum = 0, k = 0;
-               for (k = 0; k < carts[j].length; k++) {
-                   sum += carts[j][k];
-               }
+               var sum = _sum(carts[j]);
                if (sum >= target) {
-                   r++; 
+                   r++;
+                   residual += sum - target;
                }
            }
-           
+           if (rewards > solution_rewards) {
+           }           
        } else {
        }
+    }
+    function _sum(a) {
+      var i;
+      var s = 0;
+      for (i = 0; i < a.length; i++) {
+        s += a[i];
+      }
+      return s;
     }
   </script>
 </html>
