@@ -6,8 +6,7 @@
         <title>Kobo Shopping</title>
     </head>
     <body>
-        <h1>Kobo 單筆滿額贈點最佳化</h1>
-        <h1>Kobo Shopping Reward Optimization</h1>
+        <h1>Kobo 單筆滿額贈點最佳化 Kobo Shopping Reward Optimization</h1>
         <div>可買可不買書價 Prices of optional books: <input type='text' id='optionals' size='60'></input>(用空白分隔 separated by spaces)</div>
         <div>想買書價 Prices of must-buy books: <input type='text' id='must-buys' size='60'></input>(用空白分隔 separated by spaces)</div>
         <div>獎勵門檻 Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
@@ -86,25 +85,41 @@
             carts = [];
             _go(0, target);
             
-            var text = "購物車安排方式 Your solution (星號*為想買書價 * marks prices for must-buys):\n";
+            var html = "<div>購物車安排方式 Your solution (星號*為想買書價 * marks prices for must-buys)</div>";
+            html += "<table><tr><th>購物車 Cart</th><th>書價組合 Combination of book prices</th><th>總價 Sum</th><th>多餘金額 Exceeds</th>";
             for (i = 0; i < solution_carts.length; i++) {
-                text += "購物車 Cart " + (i + 1) + ": ";
-                var j;
-                for (j = 0; j < solution_carts[i].length; j++) {
-                    text += solution_carts[i][j].price;
-                    if (solution_carts[i][j].mustbuy)
-                        text += "*";
-                    if (j < solution_carts[i].length - 1)
-                        text += " + ";
-                }
                 var sum = _sum(solution_carts[i]);
-                text += " = " + sum;
-                if (sum < target) {
-                    text += " (不足" + target + "，可下次再買 less than " + target + ", can be postponed)";
+                if (sum >= target) {
+                    html += "<tr><td>" + (i + 1) + "</td><td>";
+                    var j;
+                    for (j = 0; j < solution_carts[i].length; j++) {
+                        html += solution_carts[i][j].price;
+                        if (solution_carts[i][j].mustbuy)
+                            html += "*";
+                        if (j < solution_carts[i].length - 1)
+                            html += " + ";
+                    }
+                    html += "</td><td>" + sum + "</td><td>" + (sum - target) + "</td></tr>";
                 }
-                text += "\n";
             }
-            $('#result').text(text);
+
+            for (i = 0; i < solution_carts.length; i++) {
+                var sum = _sum(solution_carts[i]);
+                if (sum < target) {
+                    html += "<tr><td>可下次再買</td><td>";
+                    var j;
+                    for (j = 0; j < solution_carts[i].length; j++) {
+                        html += solution_carts[i][j].price;
+                        if (solution_carts[i][j].mustbuy)
+                            html += "*";
+                        if (j < solution_carts[i].length - 1)
+                            html += " + ";
+                    }
+                    html += "</td><td>" + sum + "</td><td></td></tr>";
+                }
+            }
+
+            $('#result').html(html);
         }
         
         function _go(i, target) {
