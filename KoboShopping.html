@@ -27,11 +27,15 @@
                 var mustbuys = $('#must-buys').val().split(' ');
                 var i;
                 for (i = 0; i < mustbuys.length; i++) {
-                    books.push({ mustbuy: true, price: Number(mustbuys[i])});
+                    var p = Number(mustbuys[i]);
+                    if (p > 0)
+                        books.push({ mustbuy: true, price: p});
                 }
                 var optionals = $('#optionals').val().split(' ');
                 for (i = 0; i < optionals.length; i++) {
-                    books.push({ mustbuy: false, price: Number(optionals[i])});
+                    var p = Number(optionals[i]);
+                    if (p > 0)
+                        books.push({ mustbuy: false, price: p});
                 }
                 
                 var target = Number($('#target').val());
