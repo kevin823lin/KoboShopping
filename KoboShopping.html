@@ -56,6 +56,8 @@
            }
            if (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste)) {
                $.extend(true, solution_carts, carts);
+               solution_rewards = rewards;
+               solution_waste = waste;
            }           
        } else {
            var j;
