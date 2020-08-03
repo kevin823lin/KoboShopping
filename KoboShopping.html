@@ -10,18 +10,29 @@
     </head>
     <body>
         <h1>Kobo 單筆滿額贈點最佳化 Kobo Shopping Reward Optimization</h1>
-        <div>可買可不買書價 Prices of optional books: <input type='text' id='optionals' size='60'></input>(用空白分隔 separated by spaces)</div>
-        <div>想買書價 Prices of must-buy books: <input type='text' id='must-buys' size='60'></input>(用空白分隔 separated by spaces)</div>
+        <div>一般書價 Prices of books: <input type='text' id='optionals' size='40'></input>(用空白分隔 separated by spaces)</div>
+        <div>必買書價 Prices of must-buy books: <input type='text' id='must-buys' size='40'></input>(用空白分隔 separated by spaces)</div>
         <div>獎勵門檻 Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
         <div><button id='go-btn'>計算</button></div>
         <div id='result'></div>
         <div>說明:
             <ol>
-                <li>例如: 這次有三本書想買，價格分別為222元、333元、666元。則可在「可買可不買書價」中填入"222 333 666"。</li>
-                <li>最近(2020年8月)Kobo獎勵活動通常是「滿888送323點」，故在「獎勵門檻」中填入"888"</li>
-                <li>「多餘金額」是指購物車總額超過獎勵門檻的部分。例如，若某筆購物車共1000元，而獎勵門檻為888元，則多餘金額為 1000 - 888 = 112元。</li>
-                <li>通常會有不只一種拆單方式，程式會選擇各購物車中多餘金額總和最少的方式</li>
-                <li>通常會有一輛購物車的金額未達獎勵門檻。這輛購物車內的書可等到下次累積新的想買書名單後再來買。</li>
+                <li>本程式假設您在Kobo.com買書的作法是:
+                    <ul>
+                        <li>已經有一個購書清單</li>
+                        <li>在「滿額送點數」活動中，希望湊滿越多筆越好</li>
+                        <li>剩下湊不滿的書就留到下次再買，並希望湊不滿門檻的金額越高越好(下次越容易湊滿)</li>
+                    </ul>
+                </li>
+                <li>請將購書清單中的書價全部輸入到「一般書價」中，數字間用空白分隔。例如"222 333 666"。</li>
+                <li>最近(2020年8月)Kobo獎勵活動通常是「滿888送323點」，就在「獎勵門檻」中填入"888"</li>
+                <li>按下「計算」後，程式會找出最好的拆單方式。</li>
+                <li>「多餘金額」是指各個已達獎勵門檻的購物車，其總金額超過獎勵門檻的部分。例如，若某筆購物車共1000元，而獎勵門檻為888元，則多餘金額為 1000 - 888 = 112元。</li>
+                <li>「可下次再買」就是剩下湊不滿的書。</li>
+                <li>程式會找出多餘金額總和最少的拆單方式，換言之，「可下次再買」的金額會最多(方便下次湊滿門檻)</li>
+                <li>若您的購書清單中，有幾本書是這次一定要買到的，則輸入到「必買書價」中，同樣用空白分隔。「一般書價」中的書表示這次可買可不買。</li>
+                <li>「必買書價」中的書，一定不會出現在「下次再買」名單中。</li>
+                <li>本程式以JavaScript撰寫，存放在GitHub的靜態頁面，所有運算皆在使用者瀏覽器中執行，而且不會傳輸任何資料，請放心使用。</li>
             </ol>
         </div>
     </body>
@@ -146,9 +157,9 @@
                             }
                         }
                     }
-                }                
+                }
                 
-                if (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste)) {
+                if (mustbuy_left == 0 && (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste))) {
                     solution_carts = [];
                     $.extend(true, solution_carts, carts);
                     solution_rewards = rewards;
