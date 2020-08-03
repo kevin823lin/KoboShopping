@@ -6,7 +6,7 @@
   </head>
   <body>
     <h1>Kobo Shopping</h1>
-    <div>Book prices: <input type='text' id='prices' size='100' value='266 245'></input>(separated by space)</div> <!--  228 273 286 290 315 247 247 -->
+    <div>Book prices: <input type='text' id='prices' size='100' value='266 245 228 273 286 290 315 247 247'></input>(separated by space)</div> <!--   -->
     <div>Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
     <div><button id='go-btn'>go</button></div>
   </body>
@@ -30,7 +30,7 @@
             solution_waste = _sum(prices);
             //alert(solution_residual);
             _go(0, target);
-            var text = "Your solution: ";
+            var text = "Your solution:\n";
             for (i = 0; i < solution_carts.length; i++) {
                 text += "Cart " + (i + 1) + ": ";
                 var j;
