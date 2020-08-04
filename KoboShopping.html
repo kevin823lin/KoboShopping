@@ -15,6 +15,7 @@
         <div>獎勵門檻 Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
         <div><button id='go-btn'>計算</button></div>
         <div id='result'></div>
+        <hr>
         <div>說明:
             <ol>
                 <li>本程式假設您在Kobo.com買書的作法是:
@@ -108,7 +109,7 @@
             carts = [];
             _go(0, target);
             
-            var html = "<div>購物車安排方式 Your solution</div>";
+            var html = "<hr><div>購物車安排方式 Your solution</div>";
             html += "<table id='result-table' style='text-align:center;'><thead><tr><th>購物車 Cart</th><th>書價組合 Combination of book prices</th><th>總價 Sum</th><th>多餘金額 Exceeds</th></tr></thead><tbody>";
             for (i = 0; i < solution_carts.length; i++) {
                 var sum = _sum(solution_carts[i]);
