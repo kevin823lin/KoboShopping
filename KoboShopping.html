@@ -10,9 +10,20 @@
     </head>
     <body>
         <h1>Kobo 單筆滿額贈點最佳化 Kobo Shopping Reward Optimization</h1>
-        <div>一般書價 Prices of books: <input type='text' id='optionals' size='40'></input>(用空白分隔 separated by spaces)</div>
-        <div>必買書價 Prices of must-buy books: <input type='text' id='must-buys' size='40'></input>(用空白分隔 separated by spaces)</div>
-        <div>獎勵門檻 Target bundle price: <input type='text' id='target' size='4' value='888'></input></div>
+        <table>
+            <tr>
+                <td>一般書價 Prices of books</td>
+                <td><input type='text' id='optionals' size='40'></input>(用空白分隔 separated by spaces)</td>
+            </tr>
+            <tr>
+                <td>必買書價 Prices of must-buy books</td>
+                <td><input type='text' id='must-buys' size='40'></input>(用空白分隔 separated by spaces)</td>
+            </tr>
+            <tr>
+                <td>獎勵門檻 Target bundle price</td>
+                <td><input type='text' id='target' size='4' value='888'></input></td>
+            </tr>
+        </table>
         <div><button id='go-btn'>計算</button></div>
         <div id='result'></div>
         <hr>
