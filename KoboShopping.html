@@ -3,9 +3,10 @@
     <head>
         <meta charset="utf-8">
         <script data-ad-client="ca-pub-1041865931422336" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <link href="https://code.jquery.com/ui/1.12.1/themes/sunny/jquery-ui.css" rel="stylesheet" type="text/css" >
-
+        
+        <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/sunny/jquery-ui.css" >
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+        
         <title>Kobo Shopping</title>
     </head>
     <body>
@@ -25,6 +26,7 @@
             </tr>
         </table>
         <div><button id='go-btn'>計算</button></div>
+        <input type="text" name="date" id="date">
         <div id='result'></div>
         <hr>
         <div>說明:
@@ -63,6 +65,8 @@
         var books = [];
         
         $(document).ready(function() {
+            $("#date").datepicker();
+            
             var url = new URL(window.location);
             var mustbuys = url.searchParams.get("mustbuys");
             if (mustbuys) {
