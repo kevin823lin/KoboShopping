@@ -121,10 +121,11 @@
             
             var html = "<hr><div>購物車安排方式 Your solution</div>";
             html += "<table id='result-table' style='text-align:center;'><thead><tr><th>購物車 Cart</th><th>書價組合 Combination of book prices</th><th>總價 Sum</th><th>多餘金額 Exceeds</th></tr></thead><tbody>";
+            var n = 0;
             for (i = 0; i < solution_carts.length; i++) {
                 var sum = _sum(solution_carts[i]);
                 if (sum >= target) {
-                    html += "<tr><td>" + (i + 1) + "</td><td>";
+                    html += "<tr><td>" + (++n) + "</td><td>";
                     var j;
                     for (j = 0; j < solution_carts[i].length; j++) {
                         html += solution_carts[i][j].price;
