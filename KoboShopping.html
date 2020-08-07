@@ -76,8 +76,6 @@
         var books = [];
         
         $(document).ready(function() {
-            $("#date").datepicker();
-            
             var url = new URL(window.location);
             var mustbuys = url.searchParams.get("mustbuys");
             if (mustbuys) {
