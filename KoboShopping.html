@@ -68,6 +68,7 @@
         var books = [];
         
         $(document).ready(function() {
+            debugger;
             var url = new URL(window.location);
             var mustbuys = url.searchParams.get("mustbuys");
             if (mustbuys) {
@@ -100,6 +101,7 @@
             });
         });
         function _calc(mustbuys, optionals, target) {
+            debugger;
             books = [];
             var i;
             solution_mustbuy_left = 0;
