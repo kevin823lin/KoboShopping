@@ -1,231 +1,26 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Page Title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=0.5">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">-->
-        <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">-->
-        <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
-        
-        
-        <!--<script data-ad-client="ca-pub-1041865931422336" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
-        
-        <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">-->
-        
-        <title>Kobo Shopping</title>
     </head>
     <body>
-        <div class="w3-container w3-mobile">
-            <h1>Kobo 單筆滿額贈點最佳化0</h1>
-            <table>
-                <tr>
-                    <td>書價</td>
-                    <td><input type='text' id='optionals' size='40' class='w3-input w3-border' placeholder='用空白分隔'></input></td>
-                </tr>
-                <tr>
-                    <td>必買書價</td>
-                    <td><input type='text' id='must-buys' size='40' class='w3-input w3-border' placeholder='用空白分隔'></input></td>
-                </tr>
-                <tr>
-                    <td>獎勵門檻</td>
-                    <td><input type='text' id='target' size='4' class='w3-input w3-border' value='888'></input></td>
-                </tr>
-                <tr>
-                    <td colspan=2><button id='go-btn' class='w3-button w3-block w3-green'>計算</button></td>
-                </tr>
-
-
-            </table>
-            <div></div>
-            <div id='result'></div>
-            <hr>
-            <div class='text'>說明:
-                <ol>
-                    <li>本程式假設您在Kobo.com買書的作法是:
-                        <ul>
-                            <li>已經有一個購書清單</li>
-                            <li>在「滿額送點數」活動中，希望湊滿越多筆越好</li>
-                            <li>剩下湊不滿的書就留到下次再買，並希望湊不滿門檻的金額越高越好(下次越容易湊滿)</li>
-                        </ul>
-                    </li>
-                    <li>請將購書清單中的書價全部輸入到「一般書價」中，數字間用空白分隔。例如"222 333 666"。</li>
-                    <li>最近(2020年8月)Kobo獎勵活動通常是「滿888送323點」，就在「獎勵門檻」中填入"888"</li>
-                    <li>按下「計算」後，程式會找出最好的拆單方式。</li>
-                    <li>「多餘金額」是指各個已達獎勵門檻的購物車，其總金額超過獎勵門檻的部分。例如，若某筆購物車共1000元，而獎勵門檻為888元，則多餘金額為 1000 - 888 = 112元。</li>
-                    <li>「可下次再買」就是剩下湊不滿的書。</li>
-                    <li>程式會找出多餘金額總和最少的拆單方式，換言之，「可下次再買」的金額會最多(方便下次湊滿門檻)</li>
-                    <li>若您的購書清單中，有幾本書是這次一定要買到的，則輸入到「必買書價」中，同樣用空白分隔。「書價」中的書表示這次可買可不買。</li>
-                    <li>購物車結果中標註星號*的書價為必買書價。
-                    <li>「必買書價」中的書，一定不會出現在「下次再買」名單中。</li>
-                    <li>本程式以JavaScript撰寫，存放在GitHub的靜態頁面，所有運算皆在使用者瀏覽器中執行，而且不會傳輸任何資料，請放心使用。</li>
-                </ol>
+        <div class="w3-container">
+            <div class="w3-card-4">
+                <div class="w3-container w3-blue">
+                    <h2>Kobo單筆滿額贈點最佳化</h2>
+                </div>
+                <form class="w3-container">
+                    <label>書價</label>
+                    <input class="w3-input w3-border" type="text" placeholder="用空白分隔">
+                    <label>必買書價</label>
+                    <input class="w3-input w3-border" type="text" placeholder="用空白分隔">
+                    <label>獎勵門檻</label>
+                    <input class="w3-input w3-border" type="text" value="888">
+                    <button class="w3-btn w3-blue">計算 >></button>
+                </form>
             </div>
-            <a href='https://www.facebook.com/wdshieh'>聯絡作者/回報錯誤</a>
         </div>
     </body>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
-    <!--<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" ></script>-->
-
-    <!--<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>-->
-
-    <script>
-        var solution_carts = [];
-        var solution_rewards = -1;
-        var solution_waste = Number.MAX_SAFE_INTEGER;
-        var solution_mustbuy_left = 0;
-        var carts = [];
-        var books = [];
-        
-        $(document).ready(function() {
-            var url = new URL(window.location);
-            var mustbuys = url.searchParams.get("mustbuys");
-            if (mustbuys) {
-                $('#must-buys').val(mustbuys);
-            }
-            
-            var optionals = url.searchParams.get("optionals");
-            if (optionals) {
-                $('#optionals').val(optionals);
-            }
-
-            var target = url.searchParams.get("target");
-            if (target) {
-                $('#target').val(target);
-            }
-            
-            if ((mustbuys || optionals) && target) {
-                _calc(mustbuys.split(' '), optionals.split(' '), target);
-                //$('#result-table').DataTable();
-            }
-            
-            $( "#go-btn" ).click(function() {
-                var mustbuys = $('#must-buys').val();
-                var optionals = $('#optionals').val();
-                var target = Number($('#target').val());
-                var data = { mustbuys: mustbuys, optionals: optionals, target: target };
-                window.location = '/KoboShopping.html?' + $.param(data);
-                
-                //_calc(mustbuys, optionals, target);
-            });
-        });
-        function _calc(mustbuys, optionals, target) {
-            books = [];
-            var i;
-            solution_mustbuy_left = 0;
-            for (i = 0; i < mustbuys.length; i++) {
-                var p = Number(mustbuys[i]);
-                if (p > 0) {
-                    books.push({ mustbuy: true, price: p});
-                    solution_mustbuy_left++;
-                }
-            }
-            for (i = 0; i < optionals.length; i++) {
-                var p = Number(optionals[i]);
-                if (p > 0)
-                    books.push({ mustbuy: false, price: p});
-            }
-            
-            solution_waste = _sum(books);
-
-            solution_carts = [];
-            solution_rewards = -1;
-            solution_waste = Number.MAX_SAFE_INTEGER;
-            carts = [];
-            _go(0, target);
-            
-            var html = "<hr><div>購物車安排方式:</div>";
-            html += "<table id='result-table' class='w3-table w3-bordered w3-striped w3-centered'><thead><tr><th>購物車</th><th>書價組合</th><th class='w3-right-align'>總價</th><th class='w3-right-align'>多餘金額</th></tr></thead><tbody>";
-            var n = 0;
-            for (i = 0; i < solution_carts.length; i++) {
-                var sum = _sum(solution_carts[i]);
-                if (sum >= target) {
-                    html += "<tr><td>" + (++n) + "</td><td>";
-                    var j;
-                    for (j = 0; j < solution_carts[i].length; j++) {
-                        html += solution_carts[i][j].price;
-                        if (solution_carts[i][j].mustbuy)
-                            html += "*";
-                        if (j < solution_carts[i].length - 1)
-                            html += " + ";
-                    }
-                    html += "</td><td>" + sum + "</td><td>" + (sum - target) + "</td></tr>";
-                }
-            }
-
-            for (i = 0; i < solution_carts.length; i++) {
-                var sum = _sum(solution_carts[i]);
-                if (sum < target) {
-                    html += "<tr><td>可下次再買</td><td>";
-                    var j;
-                    for (j = 0; j < solution_carts[i].length; j++) {
-                        html += solution_carts[i][j].price;
-                        if (solution_carts[i][j].mustbuy)
-                            html += "*";
-                        if (j < solution_carts[i].length - 1)
-                            html += " + ";
-                    }
-                    html += "</td><td>" + sum + "</td><td></td></tr>";
-                }
-            }
-            html += "</tbody></table>";
-
-            $('#result').html(html);
-        }
-        
-        function _go(i, target) {
-            if (i == books.length) {
-                var rewards = 0, waste = 0, mustbuy_left = 0, j = 0;
-                for (j = 0; j < carts.length; j++) {
-                    var sum = _sum(carts[j]);
-                    if (sum >= target) {
-                        rewards++;
-                        waste += sum - target;
-                    } else {
-                        for (k = 0; k < carts[j].length; k++) {
-                            if (carts[j][k].mustbuy) {
-                                mustbuy_left++;
-                            }
-                        }
-                    }
-                }
-                
-                if (mustbuy_left <= solution_mustbuy_left && (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste))) {
-                    solution_carts = [];
-                    $.extend(true, solution_carts, carts);
-                    solution_rewards = rewards;
-                    solution_waste = waste;
-                    solution_mustbuy_left = mustbuy_left;
-                }
-            } else {
-                var j;
-                for (j = 0; j < carts.length; j++) {
-                    var sum = _sum(carts[j]);
-                    //if (sum < target) {
-                        carts[j].push(books[i]);
-                        _go(i + 1, target);
-                        carts[j].pop();
-                    //}
-                }
-                var newCart = [];
-                newCart.push(books[i]);
-                carts.push(newCart);
-                _go(i + 1, target);
-                carts.pop();
-            }
-        }
-        function _sum(a) {
-            var i;
-            var s = 0;
-            for (i = 0; i < a.length; i++) {
-                s += a[i].price;
-            }
-            return s;
-        }
-    </script>
-    <style>
-        body, table {
-            font-size: 2em;
-        }
-</style>
 </html>
