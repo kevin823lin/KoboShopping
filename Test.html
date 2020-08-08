@@ -1,74 +1,68 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
+        <title>Kobo單筆滿888贈323點-拆單最佳化</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">-->
-        <!--<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">-->
-        <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
-        
-        
-        <!--<script data-ad-client="ca-pub-1041865931422336" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
-        
-        <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">-->
-        
-        <title>Kobo Shopping</title>
     </head>
-    <body>
-        <div class="w3-container w3-mobile">
-            <h1>Kobo 單筆滿額贈點最佳化0</h1>
-            <table>
-                <tr>
-                    <td>書價</td>
-                    <td><input type='text' id='optionals' size='40' class='w3-input w3-border' placeholder='用空白分隔'></input></td>
-                </tr>
-                <tr>
-                    <td>必買書價</td>
-                    <td><input type='text' id='must-buys' size='40' class='w3-input w3-border' placeholder='用空白分隔'></input></td>
-                </tr>
-                <tr>
-                    <td>獎勵門檻</td>
-                    <td><input type='text' id='target' size='4' class='w3-input w3-border' value='888'></input></td>
-                </tr>
-                <tr>
-                    <td colspan=2><button id='go-btn' class='w3-button w3-block w3-green'>計算</button></td>
-                </tr>
-
-
-            </table>
-            <div></div>
-            <div id='result'></div>
-            <hr>
-            <div class='text'>說明:
-                <ol>
-                    <li>本程式假設您在Kobo.com買書的作法是:
-                        <ul>
-                            <li>已經有一個購書清單</li>
-                            <li>在「滿額送點數」活動中，希望湊滿越多筆越好</li>
-                            <li>剩下湊不滿的書就留到下次再買，並希望湊不滿門檻的金額越高越好(下次越容易湊滿)</li>
-                        </ul>
-                    </li>
-                    <li>請將購書清單中的書價全部輸入到「一般書價」中，數字間用空白分隔。例如"222 333 666"。</li>
-                    <li>最近(2020年8月)Kobo獎勵活動通常是「滿888送323點」，就在「獎勵門檻」中填入"888"</li>
-                    <li>按下「計算」後，程式會找出最好的拆單方式。</li>
-                    <li>「多餘金額」是指各個已達獎勵門檻的購物車，其總金額超過獎勵門檻的部分。例如，若某筆購物車共1000元，而獎勵門檻為888元，則多餘金額為 1000 - 888 = 112元。</li>
-                    <li>「可下次再買」就是剩下湊不滿的書。</li>
-                    <li>程式會找出多餘金額總和最少的拆單方式，換言之，「可下次再買」的金額會最多(方便下次湊滿門檻)</li>
-                    <li>若您的購書清單中，有幾本書是這次一定要買到的，則輸入到「必買書價」中，同樣用空白分隔。「書價」中的書表示這次可買可不買。</li>
-                    <li>購物車結果中標註星號*的書價為必買書價。
-                    <li>「必買書價」中的書，一定不會出現在「下次再買」名單中。</li>
-                    <li>本程式以JavaScript撰寫，存放在GitHub的靜態頁面，所有運算皆在使用者瀏覽器中執行，而且不會傳輸任何資料，請放心使用。</li>
-                </ol>
+    <body class="w3-mobile w3-large">
+        <div class="w3-panel">
+            <div class="w3-card-4">
+                <header class="w3-container w3-blue">
+                    <h2>Kobo單筆滿888贈323點-拆單最佳化</h2>
+                </header>
+                <div class="w3-panel">
+                    <div class="w3-panel">
+                        <label>書價</label>
+                        <input id="optionals" class="w3-input w3-border" type="text" placeholder="用空白分隔">
+                    </div>
+                    <div class="w3-panel">
+                        <label>必買書價</label>
+                        <input id="must-buys" class="w3-input w3-border" type="text" placeholder="用空白分隔">
+                    </div>
+                    <div class="w3-panel">
+                        <label>獎勵門檻</label>
+                        <div class="w3-cell">
+                            <input id="target" class="w3-input w3-border" type="text" value="888" width="4em">
+                        </div>
+                        <div class="w3-container w3-cell">
+                            <div class="w3-container">
+                                <button class="w3-btn w3-blue" id="go-btn">計算 »</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+        
+        <div class="w3-container w3-panel" id="result"></div>
+        
+        <div class="w3-container w3-panel" class='text'>說明:
+            <ol>
+                <li>本程式假設您在Kobo.com買書的作法是:
+                    <ul class="w3-ul w3-border">
+                        <li>已經有一個購書清單</li>
+                        <li>在「滿額送點數」活動中，希望湊滿越多筆越好</li>
+                        <li>剩下湊不滿的書就留到下次再買，並希望湊不滿門檻的金額越高越好(下次越容易湊滿)</li>
+                    </ul>
+                </li>
+                <li>請將購書清單中的書價全部輸入到「一般書價」中，數字間用空白分隔。例如"222 333 666"。</li>
+                <li>最近(2020年8月)Kobo獎勵活動通常是「滿888送323點」，就在「獎勵門檻」中填入"888"</li>
+                <li>按下「計算」後，程式會找出最好的拆單方式。</li>
+                <li>「多餘金額」是指各個已達獎勵門檻的購物車，其總金額超過獎勵門檻的部分。例如，若某筆購物車共1000元，而獎勵門檻為888元，則多餘金額為 1000 - 888 = 112元。</li>
+                <li>「可下次再買」就是剩下湊不滿的書。</li>
+                <li>程式會找出多餘金額總和最少的拆單方式，換言之，「可下次再買」的金額會最多(方便下次湊滿門檻)</li>
+                <li>若您的購書清單中，有幾本書是這次一定要買到的，則輸入到「必買書價」中，同樣用空白分隔。「書價」中的書表示這次可買可不買。</li>
+                <li>購物車結果中標註星號*的書價為必買書價。
+                <li>「必買書價」中的書，一定不會出現在「下次再買」名單中。</li>
+                <li>本程式以JavaScript撰寫，存放在GitHub的靜態頁面，所有運算皆在使用者瀏覽器中執行，而且不會傳輸任何資料，請放心使用。</li>
+            </ol>
+        </div>
+        <div class="w3-container w3-panel">
             <a href='https://www.facebook.com/wdshieh'>聯絡作者/回報錯誤</a>
         </div>
     </body>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
-    <!--<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" ></script>-->
-
-    <!--<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>-->
-
     <script>
         var solution_carts = [];
         var solution_rewards = -1;
@@ -78,6 +72,7 @@
         var books = [];
         
         $(document).ready(function() {
+            debugger;
             var url = new URL(window.location);
             var mustbuys = url.searchParams.get("mustbuys");
             if (mustbuys) {
@@ -110,6 +105,7 @@
             });
         });
         function _calc(mustbuys, optionals, target) {
+            debugger;
             books = [];
             var i;
             solution_mustbuy_left = 0;
@@ -134,6 +130,17 @@
             carts = [];
             _go(0, target);
             
+            solution_carts.sort(function(a, b) {
+                var sumA = _sum(a);
+                var sumB = _sum(b);
+                if (sumA < sumB)
+                    return -1;
+                else if (sumA > sumB)
+                    return 1;
+                else
+                    return 0;
+            });
+            
             var html = "<hr><div>購物車安排方式:</div>";
             html += "<table id='result-table' class='w3-table w3-bordered w3-striped w3-centered'><thead><tr><th>購物車</th><th>書價組合</th><th class='w3-right-align'>總價</th><th class='w3-right-align'>多餘金額</th></tr></thead><tbody>";
             var n = 0;
@@ -149,7 +156,7 @@
                         if (j < solution_carts[i].length - 1)
                             html += " + ";
                     }
-                    html += "</td><td>" + sum + "</td><td>" + (sum - target) + "</td></tr>";
+                    html += "</td><td class='w3-right-align'>" + sum + "</td><td class='w3-right-align'>" + (sum - target) + "</td></tr>";
                 }
             }
 
@@ -165,7 +172,7 @@
                         if (j < solution_carts[i].length - 1)
                             html += " + ";
                     }
-                    html += "</td><td>" + sum + "</td><td></td></tr>";
+                    html += "</td><td class='w3-right-align'>" + sum + "</td><td></td></tr>";
                 }
             }
             html += "</tbody></table>";
@@ -223,9 +230,4 @@
             return s;
         }
     </script>
-    <style>
-        body, table {
-            font-size: 2em;
-        }
-</style>
 </html>
