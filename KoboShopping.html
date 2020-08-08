@@ -128,7 +128,19 @@
             solution_rewards = -1;
             solution_waste = Number.MAX_SAFE_INTEGER;
             carts = [];
+            
             _go(0, target);
+            
+            solution_carts.sort(function(a, b) {
+                var sumA = _sum(a);
+                var sumB = _sum(b);
+                if (sumA < sumB)
+                    return -1;
+                else if (sumA > sumB)
+                    return 1;
+                else
+                    return 0;
+            });
             
             var html = "<hr><div>購物車安排方式:</div>";
             html += "<table id='result-table' class='w3-table w3-bordered w3-striped w3-centered'><thead><tr><th>購物車</th><th>書價組合</th><th class='w3-right-align'>總價</th><th class='w3-right-align'>多餘金額</th></tr></thead><tbody>";
