@@ -9,7 +9,7 @@
         <div class="w3-panel">
             <div class="w3-card-4">
                 <header class="w3-container w3-blue">
-                    <h2>Kobo單筆滿888贈323點-拆單最佳化4</h2>
+                    <h2>Kobo單筆滿888贈323點-拆單最佳化5</h2>
                 </header>
                 <div class="w3-panel">
                     <div class="w3-panel">
@@ -23,11 +23,11 @@
                     <div class="w3-panel">
                         <div class="w3-cell">
                             <label>獎勵門檻</label>
-                            <input id="target" class="w3-input w3-border" type="text" value="888" width="4em">
+                            <input id="target" class="w3-input w3-border" type="text" value="888" width="2em">
                         </div>
                         <div class="w3-cell w3-container">
                             <label>購物車金額上限</label>
-                            <input id="upperbound" class="w3-input w3-border" type="text" value="918" width="4em">
+                            <input id="upperBound" class="w3-input w3-border" type="text" value="918" width="2em">
                         </div>
                     </div>
                     <div class="w3-panel">
@@ -91,8 +91,13 @@
                 $('#target').val(target);
             }
             
+            var upperBound = url.searchParams.get("upperBound");
+            if (upperBound) {
+                $('#upperBound').val(upperBound);
+            }
+            
             if ((mustbuys || optionals) && target) {
-                _calc(mustbuys.split(' '), optionals.split(' '), target);
+                _calc(mustbuys.split(' '), optionals.split(' '), target, upperBound);
                 //$('#result-table').DataTable();
             }
             
@@ -106,8 +111,7 @@
                 //_calc(mustbuys, optionals, target);
             });
         });
-        function _calc(mustbuys, optionals, target) {
-            debugger;
+        function _calc(mustbuys, optionals, target, upperBound) {
             books = [];
             var i;
             solution_mustbuy_left = 0;
@@ -131,7 +135,7 @@
             solution_waste = Number.MAX_SAFE_INTEGER;
             carts = [];
             
-            _go(0, target);
+            _go(0, target, upperBound);
             
             solution_carts.sort(function(a, b) {
                 var sumA = _sum(a);
@@ -183,7 +187,7 @@
             $('#result').html(html);
         }
         
-        function _go(i, target) {
+        function _go(i, target, upperBound) {
             if (i == books.length) {
                 var rewards = 0, waste = 0, mustbuy_left = 0, j = 0;
                 for (j = 0; j < carts.length; j++) {
