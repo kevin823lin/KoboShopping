@@ -9,7 +9,7 @@
         <div class="w3-panel">
             <div class="w3-card-4">
                 <header class="w3-container w3-blue">
-                    <h2>Kobo單筆滿888贈323點-拆單最佳化1</h2>
+                    <h2>Kobo單筆滿888贈323點-拆單最佳化2</h2>
                 </header>
                 <div class="w3-panel">
                     <div class="w3-panel">
@@ -219,16 +219,16 @@
                     //var sum = _sum(carts[j]);
                     //if (sum < target) {
                         carts[j].push(books[i]);
-                        cartsSums[j] += books[i];
+                        cartsSums[j] += books[i].price;
                         _go(i + 1, target);
                         carts[j].pop();
-                        carsSums[j] -= books[i];
+                        carsSums[j] -= books[i].price;
                     //}
                 }
                 var newCart = [];
                 newCart.push(books[i]);
                 carts.push(newCart);
-                cartsSums.push(books[i]);
+                cartsSums.push(books[i].price);
                 _go(i + 1, target);
                 carts.pop();
                 cartsSums.pop();
