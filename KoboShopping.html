@@ -9,7 +9,7 @@
         <div class="w3-panel">
             <div class="w3-card-4">
                 <header class="w3-container w3-blue">
-                    <h2>Kobo單筆滿888贈323點-拆單最佳化</h2>
+                    <h2>Kobo單筆滿888贈323點-拆單最佳化1</h2>
                 </header>
                 <div class="w3-panel">
                     <div class="w3-panel">
@@ -135,7 +135,7 @@
             solution_rewards = -1;
             solution_waste = Number.MAX_SAFE_INTEGER;
             carts = [];
-            //cartsSums = [];
+            cartsSums = [];
             
             _go(0, target, upperBound);
             
@@ -193,8 +193,8 @@
             if (i == books.length) {
                 var rewards = 0, waste = 0, mustbuy_left = 0, j = 0;
                 for (j = 0; j < carts.length; j++) {
-                    //var sum = cartsSums[j]; //_sum(carts[j]);
-                    var sum = _sum(carts[j]);
+                    var sum = cartsSums[j]; //_sum(carts[j]);
+                    //var sum = _sum(carts[j]);
                     if (sum >= target) {
                         rewards++;
                         waste += sum - target;
@@ -218,21 +218,22 @@
                 var j;
                 for (j = 0; j < carts.length; j++) {
                     //var sum = _sum(carts[j]);
-                    //if (sum < target) {
+                    var sum = cartsSums[j];
+                    if (sum < target) {
                         carts[j].push(books[i]);
-                        //cartsSums[j] += books[i].price;
+                        cartsSums[j] += books[i].price;
                         _go(i + 1, target);
                         carts[j].pop();
-                        //cartsSums[j] -= books[i].price;
-                    //}
+                        cartsSums[j] -= books[i].price;
+                    }
                 }
                 var newCart = [];
                 newCart.push(books[i]);
                 carts.push(newCart);
-                //cartsSums.push(books[i].price);
+                cartsSums.push(books[i].price);
                 _go(i + 1, target);
                 carts.pop();
-                //cartsSums.pop();
+                cartsSums.pop();
             }
         }
         function _sum(a) {
