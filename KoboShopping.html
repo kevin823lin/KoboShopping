@@ -9,7 +9,7 @@
         <div class="w3-panel">
             <div class="w3-card-4">
                 <header class="w3-container w3-blue">
-                    <h2>Kobo單筆滿888贈323點-拆單最佳化2</h2>
+                    <h2>Kobo單筆滿888贈323點-拆單最佳化</h2>
                 </header>
                 <div class="w3-panel">
                     <div class="w3-panel">
@@ -171,6 +171,7 @@
 
             html += "<tr><td>可下次再買</td><td>";
             var nextTimeCount = 0;
+            var nextTimeSum = 0;
             for (i = 0; i < solution_carts.length; i++) {
                 var sum = _sum(solution_carts[i]);
                 if (sum < target) {
@@ -179,13 +180,14 @@
                         if (nextTimeCount > 0)
                             html += " + ";
                         html += solution_carts[i][j].price;
+                        nextTimeSum += solution_carts[i][j].price;
                         nextTimeCount++;
                         if (solution_carts[i][j].mustbuy)
                             html += "*";
                     }
                 }
             }
-            html += "</td><td class='w3-right-align'>" + sum + "</td><td></td></tr>";
+            html += "</td><td class='w3-right-align'>" + nextTimeSum + "</td><td></td></tr>";
             html += "</tbody></table>";
 
             $('#result').html(html);
