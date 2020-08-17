@@ -97,7 +97,7 @@
             }
             
             if ((mustbuys || optionals) && target) {
-                _calc(mustbuys.split(' '), optionals.split(' '), target, upperBoundupperBoundupperBoundupperBound);
+                _calc(mustbuys.split(' '), optionals.split(' '), target, upperBound);
                 //$('#result-table').DataTable();
             }
             
@@ -106,7 +106,7 @@
                 var optionals = $('#optionals').val();
                 var target = Number($('#target').val());
                 var upperBound = Number($('#upperBound').val());
-                var data = { mustbuys: mustbuys, optionals: optionals, target: target, upperBound};
+                var data = { mustbuys: mustbuys, optionals: optionals, target: target, upperBound: upperBound};
                 window.location = '/KoboShopping.html?' + $.param(data);
                 
                 //_calc(mustbuys, optionals, target);
