@@ -225,7 +225,7 @@
                     //var sum = _sum(carts[j]);
                     var tryThisCart = false;
                     
-                    if (upperBound > 0 && cartsSums[j] + books[i].price < upperBound) {
+                    if (upperBound <= 0 || cartsSums[j] + books[i].price < upperBound) {
                         tryThisCart = true;
                     } else if (cartsSums[j] < target) {
                         triThisCart = true;
@@ -240,7 +240,7 @@
                 }
                 
                 var tryNewCart = false;
-                if (upperBound > 0 && books[i].price < upperBound) {
+                if (upperBound <= 0 || books[i].price < upperBound) {
                     tryNewCart = true;
                 } else if (cartsSums[j] < target) {
                     triThisCart = true;
