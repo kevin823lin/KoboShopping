@@ -140,6 +140,8 @@
             solution_waste = Number.MAX_SAFE_INTEGER;
             carts = [];
             cartsSums = [];
+
+            var avgExcess = 0;
             
             _go(0, target, upperBound);
             
@@ -170,8 +172,11 @@
                             html += " + ";
                     }
                     html += "</td><td class='w3-right-align'>" + sum + "</td><td class='w3-right-align'>" + (sum - target) + "</td></tr>";
+                    avgExcess += sum - target;
                 }
             }
+            avgExcess /= solution_carts.length;
+            html += `<tr><td colspan=2>平均多餘金額</td><td colspan=2>${avgExcess}</td></tr>`;
 
             html += "<tr><td>可下次再買</td><td>";
             var nextTimeCount = 0;
