@@ -1,43 +1,31 @@
-## Welcome to My GitHub Pages
+## KoboShopping
 
-[wdshieh.github.io](https://wdshieh.github.io/)
+本專案修改自 [wdshieh](https://github.com/wdshieh) [(web)](https://wdshieh.github.io) - [KoboShopping Optimization](https://wdshieh.github.io/KoboShopping.html)
 
-[KoboShopping Optimization](https://wdshieh.github.io/KoboShopping.html)
+### 修改概要
 
+* 修正平均計算分母
 
+* 效能優化
 
-You can use the [editor on GitHub](https://github.com/wdshieh/wdshieh.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+* 調整部分 UI
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+    * 計算中/計算時間
 
-### Markdown
+    * 單一購物車內排序
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+* 個人撰寫偏好
 
-```markdown
-Syntax highlighted code block
+* GitHub Copilot 提出之修改建議
 
-# Header 1
-## Header 2
-### Header 3
+### 效能優化項目
 
-- Bulleted
-- List
+* 部分改用 ES6 語法提升效能
 
-1. Numbered
-2. List
+* 單本超過門檻直接放入購物車
 
-**Bold** and _Italic_ and `Code` text
+* 書籍添加到陣列後按照必買、價格排序以提早剪枝
 
-[Link](url) and ![Image](src)
-```
+* 購物車超過門檻即停止嘗試添加新書
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/wdshieh/wdshieh.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+* 使用 async 延遲執行確保 UI 響應

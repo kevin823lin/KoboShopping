@@ -65,213 +65,238 @@
             </ol>
         </div>
         <div class="w3-container w3-panel">
-            Kobo單筆滿額贈點-拆單最佳化 版本1.1.0 <a href='https://www.facebook.com/wdshieh'>聯絡作者/您發現程式有錯嗎? 請告訴我</a>
+            Kobo單筆滿額贈點-拆單最佳化 <b><a href="https://github.com/kevin823lin/KoboShopping">此為Kevin修改版</a></b> <a href="https://github.com/wdshieh/wdshieh.github.io">原作者GitHub</a> <a href='https://wdshieh.github.io/KoboShopping.html'>原始版本1.1.0</a>
         </div>
     </body>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
     <script>
-        var solution_carts = [];
-        var solution_rewards = -1;
-        var solution_waste = Number.MAX_SAFE_INTEGER;
-        var solution_mustbuy_left = 0;
-        var carts = [];
-        var books = [];
-        
-        $(document).ready(function() {
-            debugger;
-            var url = new URL(window.location);
-            var mustbuys = url.searchParams.get("mustbuys");
-            if (mustbuys) {
+        (function() {
+            let solution_carts = [];
+            let solution_rewards = -1;
+            let solution_waste = Number.MAX_SAFE_INTEGER;
+            let solution_mustbuy_left = 0;
+            const carts = [];
+            const books = [];
+            const cartsSums = [];
+            
+            $(document).ready(function() {
+                debugger;
+                const url = new URL(window.location);
+                const mustbuys = url.searchParams.get("mustbuys") || "";
+                const optionals = url.searchParams.get("optionals") || "";
+                const target = url.searchParams.get("target");
+                const upperBound = url.searchParams.get("upperBound");
+
                 $('#must-buys').val(mustbuys);
-            }
-            
-            var optionals = url.searchParams.get("optionals");
-            if (optionals) {
                 $('#optionals').val(optionals);
-            }
 
-            var target = url.searchParams.get("target");
-            if (target) {
-                $('#target').val(target);
-            }
-            
-            var upperBound = url.searchParams.get("upperBound");
-            if (upperBound) {
-                $('#upperBound').val(upperBound);
-            }
-            
-            if ((mustbuys || optionals) && target) {
-                _calc(mustbuys.split(' '), optionals.split(' '), target, upperBound);
-                //$('#result-table').DataTable();
-            }
-            
-            $( "#go-btn" ).click(function() {
-                var mustbuys = $('#must-buys').val();
-                var optionals = $('#optionals').val();
-                var target = Number($('#target').val());
-                var upperBound = Number($('#upperBound').val());
-                var data = { mustbuys: mustbuys, optionals: optionals, target: target, upperBound: upperBound};
-                window.location = '/KoboShopping.html?' + $.param(data);
+                if (target) {
+                    $('#target').val(target);
+                }
                 
-                //_calc(mustbuys, optionals, target);
+                if (upperBound) {
+                    $('#upperBound').val(upperBound);
+                }
+                
+                if ((mustbuys || optionals) && target) {
+                    _calc(mustbuys.split(' ').filter(Boolean), optionals.split(' ').filter(Boolean), Number(target), Number(upperBound));
+                }
+                
+                $( "#go-btn" ).click(function() {
+                    const mustbuys = $('#must-buys').val();
+                    const optionals = $('#optionals').val();
+                    const target = Number($('#target').val());
+                    const upperBound = Number($('#upperBound').val());
+                    const data = { mustbuys: mustbuys, optionals: optionals, target: target, upperBound: upperBound};
+                    window.location = `${window.location.pathname}?${$.param(data)}`;
+                });
             });
-        });
-        function _calc(mustbuys, optionals, target, upperBound) {
-            books = [];
-            var i;
-            solution_mustbuy_left = 0;
-            for (i = 0; i < mustbuys.length; i++) {
-                var p = Number(mustbuys[i]);
-                if (p > 0) {
-                    books.push({ mustbuy: true, price: p});
-                    solution_mustbuy_left++;
-                }
-            }
-            for (i = 0; i < optionals.length; i++) {
-                var p = Number(optionals[i]);
-                if (p > 0)
-                    books.push({ mustbuy: false, price: p});
-            }
-            
-            solution_waste = _sum(books);
 
-            solution_carts = [];
-            solution_rewards = -1;
-            solution_waste = Number.MAX_SAFE_INTEGER;
-            carts = [];
-            cartsSums = [];
+            function _calc(mustbuys, optionals, target, upperBound) {
+                // 顯示計算開始
+                $('#result').html("<div class='w3-panel w3-pale-blue'><h3>正在計算中，請稍候...</h3></div>");
+                
+                // 延遲執行實際計算，讓UI有時間更新
+                setTimeout(() => {
+                    const startTime = performance.now();
 
-            var avgExcess = 0;
-            
-            _go(0, target, upperBound);
-            
-            solution_carts.sort(function(a, b) {
-                var sumA = _sum(a);
-                var sumB = _sum(b);
-                if (sumA < sumB)
-                    return -1;
-                else if (sumA > sumB)
-                    return 1;
-                else
-                    return 0;
-            });
-            
-            var html = "<hr><div>購物車安排方式:</div>";
-            html += "<table id='result-table' class='w3-table w3-bordered w3-striped w3-centered'><thead><tr><th>購物車</th><th>書價組合</th><th class='w3-right-align'>總價</th><th class='w3-right-align'>多餘金額</th></tr></thead><tbody>";
-            var n = 0;
-            for (i = 0; i < solution_carts.length; i++) {
-                var sum = _sum(solution_carts[i]);
-                if (sum >= target) {
-                    html += "<tr><td>" + (++n) + "</td><td>";
-                    var j;
-                    for (j = 0; j < solution_carts[i].length; j++) {
-                        html += solution_carts[i][j].price;
-                        if (solution_carts[i][j].mustbuy)
-                            html += "*";
-                        if (j < solution_carts[i].length - 1)
-                            html += " + ";
-                    }
-                    html += "</td><td class='w3-right-align'>" + sum + "</td><td class='w3-right-align'>" + (sum - target) + "</td></tr>";
-                    avgExcess += sum - target;
-                }
-            }
-            avgExcess /= solution_carts.length;
-            html += `<tr><td colspan=2></td><td>平均多餘金額</td><td>${Math.round(10*avgExcess)/10}</td></tr>`;
+                    const preProcessedCarts = []; // 預先處理好的購物車（單本超過門檻的書）
 
-            html += "<tr><td>可下次再買</td><td>";
-            var nextTimeCount = 0;
-            var nextTimeSum = 0;
-            for (i = 0; i < solution_carts.length; i++) {
-                var sum = _sum(solution_carts[i]);
-                if (sum < target) {
-                    var j;
-                    for (j = 0; j < solution_carts[i].length; j++) {
-                        if (nextTimeCount > 0)
-                            html += " + ";
-                        html += solution_carts[i][j].price;
-                        nextTimeSum += solution_carts[i][j].price;
-                        nextTimeCount++;
-                        if (solution_carts[i][j].mustbuy)
-                            html += "*";
-                    }
-                }
-            }
-            html += "</td><td class='w3-right-align'>" + nextTimeSum + "</td><td></td></tr>";
-            html += "</tbody></table>";
-
-            $('#result').html(html);
-        }
-        
-        function _go(i, target, upperBound) {
-            if (i == books.length) {
-                var rewards = 0, waste = 0, mustbuy_left = 0, j = 0;
-                for (j = 0; j < carts.length; j++) {
-                    var sum = cartsSums[j]; //_sum(carts[j]);
-                    //var sum = _sum(carts[j]);
-                    if (sum >= target) {
-                        rewards++;
-                        waste += sum - target;
-                    } else {
-                        for (k = 0; k < carts[j].length; k++) {
-                            if (carts[j][k].mustbuy) {
-                                mustbuy_left++;
+                    // 先處理必買書籍
+                    mustbuys.forEach(p => {
+                        const price = isNaN(Number(p)) ? 0 : Number(p);
+                        if (price > 0) {
+                            if (price >= target) {
+                                // 如果必買書單本就超過門檻，直接建立購物車
+                                preProcessedCarts.push([{ mustbuy: true, price: price }]);
+                            } else {
+                                books.push({ mustbuy: true, price: price });
+                                solution_mustbuy_left++;
                             }
                         }
+                    });
+
+                    // 處理選擇性書籍
+                    optionals.forEach(p => {
+                        const price = isNaN(Number(p)) ? 0 : Number(p);
+                        if (price > 0) {
+                            if (price >= target) {
+                                // 如果選擇性書籍單本就超過門檻，直接建立購物車
+                                preProcessedCarts.push([{ mustbuy: false, price: price }]);
+                            } else {
+                                books.push({ mustbuy: false, price: price });
+                            }
+                        }
+                    });
+
+                    // 在處理完單本超過門檻的書後，對剩餘的書籍進行排序
+                    books.sort((a, b) => {
+                        // 先按必買屬性排序，必買書優先
+                        if (a.mustbuy !== b.mustbuy) return b.mustbuy ? -1 : 1;
+                        // 再按價格從高到低排序
+                        return b.price - a.price;
+                    });
+
+                    _go(0, target, upperBound);
+                    solution_carts = preProcessedCarts.concat(solution_carts);
+
+                    solution_carts.sort(function (a, b) {
+                        const sumA = _sum(a);
+                        const sumB = _sum(b);
+                        if (sumA < sumB)
+                            return -1;
+                        else if (sumA > sumB)
+                            return 1;
+                        else
+                            return 0;
+                    });
+
+                    let html = `<hr><div>購物車安排方式:</div>
+                                <table id='result-table' class='w3-table w3-bordered w3-striped w3-centered'>
+                                    <thread>
+                                        <tr>
+                                            <th>購物車</th>
+                                            <th>書價組合</th>
+                                            <th class='w3-right-align'>總價</th>
+                                            <th class='w3-right-align'>多餘金額</th>
+                                        </tr>
+                                    </thread>
+                                    <tbody>`;
+                    let cartCount = 0;
+                    let totalExcess = 0;
+
+                    let nextTimeCart = []; // 存放未達門檻的所有書籍
+                    let nextTimeSum = 0;
+
+                    // 一次性處理所有購物車
+                    for (const cart of solution_carts) {
+                        const sum = _sum(cart);
+                        if (sum >= target) {
+                            // 處理達到門檻的購物車
+                            const excess = sum - target;
+                            html += `<tr>
+                                <td>${++cartCount}</td>
+                                <td>${_cartToString(cart)}</td>
+                                <td class='w3-right-align'>${sum}</td>
+                                <td class='w3-right-align'>${excess}</td>
+                            </tr>`;
+                            totalExcess += excess ;
+                        } else {
+                            // 處理未達到門檻的購物車 (將書本合併到一起，稍後再處理)
+                            nextTimeCart = nextTimeCart.concat(cart);
+                            nextTimeSum += sum;
+                        }
                     }
-                }
-                
-                if (mustbuy_left <= solution_mustbuy_left && (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste))) {
-                    solution_carts = [];
-                    $.extend(true, solution_carts, carts);
-                    solution_rewards = rewards;
-                    solution_waste = waste;
-                    solution_mustbuy_left = mustbuy_left;
-                }
-            } else {
-                var j;
-                for (j = 0; j < carts.length; j++) {
-                    //var sum = _sum(carts[j]);
-                    var tryThisCart = false;
+
+                    const avgExcess = cartCount ? (totalExcess / cartCount) : 0;
+                    html += `<tr>
+                        <td colspan=2></td>
+                        <td class='w3-right-align'>平均多餘金額</td>
+                        <td class='w3-right-align'>${Math.round(10 * avgExcess) / 10}</td>
+                    </tr>`;
                     
-                    if (upperBound <= 0 || cartsSums[j] + books[i].price < upperBound) {
-                        tryThisCart = true;
-                    } else if (cartsSums[j] < target) {
-                        triThisCart = true;
+                    if (nextTimeCart.length) {
+                        html += `<tr>
+                            <td>可下次再買</td>
+                            <td>${_cartToString(nextTimeCart)}</td>
+                            <td class='w3-right-align'>${nextTimeSum}</td>
+                            <td></td>
+                        </tr>`;
                     }
-                    if (tryThisCart) {
-                        carts[j].push(books[i]);
-                        cartsSums[j] += books[i].price;
+
+                    html += "</tbody></table>";
+
+                    // 計算結束時間並顯示執行秒數
+                    const endTime = performance.now();
+                    const executionTime = (endTime - startTime) / 1000; // 轉換為秒
+                    html += `<div class='w3-panel w3-pale-green w3-display-container'>
+                        <span onclick="this.parentElement.style.display='none'" class="w3-button w3-pale-green w3-large w3-display-topright">&times;</span>
+                        <p>${books.length + preProcessedCarts.length}本書計算完成，執行時間: ${executionTime.toFixed(2)} 秒</p>
+                    </div>`;
+
+                    $('#result').html(html);
+                }, 10);
+            }
+            
+            function _go(i, target, upperBound) {
+                if (i == books.length) {
+                    const { rewards, waste, mustbuy_left } = carts.reduce((acc, cart, j) => {
+                        const sum = cartsSums[j];
+                        if (sum >= target) {
+                            acc.rewards++;
+                            acc.waste += sum - target;
+                        } else {
+                            acc.mustbuy_left += cart.filter(book => book.mustbuy).length;
+                        }
+                        return acc;
+                    }, { rewards: 0, waste: 0, mustbuy_left: 0 });
+                    
+                    if (mustbuy_left <= solution_mustbuy_left && (rewards > solution_rewards || (rewards == solution_rewards && waste < solution_waste))) {
+                        solution_carts = JSON.parse(JSON.stringify(carts));
+                        solution_rewards = rewards;
+                        solution_waste = waste;
+                        solution_mustbuy_left = mustbuy_left;
+                    }
+                } else {
+                    for (let j = 0; j < carts.length; j++) {
+                        if ((upperBound <= 0 || cartsSums[j] + books[i].price < upperBound) && cartsSums[j] < target) {
+                            carts[j].push(books[i]);
+                            cartsSums[j] += books[i].price;
+                            _go(i + 1, target, upperBound);
+                            carts[j].pop();
+                            cartsSums[j] -= books[i].price;
+                        }
+                    }
+                    
+                    if (upperBound <= 0 || books[i].price < upperBound) {
+                        const newCart = [];
+                        newCart.push(books[i]);
+                        carts.push(newCart);
+                        cartsSums.push(books[i].price);
                         _go(i + 1, target, upperBound);
-                        carts[j].pop();
-                        cartsSums[j] -= books[i].price;
+                        carts.pop();
+                        cartsSums.pop();
                     }
                 }
-                
-                var tryNewCart = false;
-                if (upperBound <= 0 || books[i].price < upperBound) {
-                    tryNewCart = true;
-                } else if (cartsSums[j] < target) {
-                    triThisCart = true;
-                }
-                
-                if (tryNewCart) {        
-                    var newCart = [];
-                    newCart.push(books[i]);
-                    carts.push(newCart);
-                    cartsSums.push(books[i].price);
-                    _go(i + 1, target, upperBound);
-                    carts.pop();
-                    cartsSums.pop();
-                }
             }
-        }
-        function _sum(a) {
-            var i;
-            var s = 0;
-            for (i = 0; i < a.length; i++) {
-                s += a[i].price;
+
+            function _sum(a) {
+                return a.reduce((sum, book) => sum + book.price, 0);
             }
-            return s;
-        }
+
+            function _cartToString(cart) {
+                const sortedBooks = [...cart].sort((a, b) => {
+                    if (a.mustbuy !== b.mustbuy) return b.mustbuy ? -1 : 1;
+                    return b.price - a.price;
+                });
+                
+                return sortedBooks.map((book, index) => {
+                    let str = book.price;
+                    if (book.mustbuy) str += "*";
+                    return str;
+                }).join(" + ");
+            }
+
+        })();
     </script>
 </html>
