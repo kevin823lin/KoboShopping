@@ -2,7 +2,11 @@
 
 本專案修改自 [wdshieh](https://github.com/wdshieh) [(web)](https://wdshieh.github.io) - [KoboShopping Optimization](https://wdshieh.github.io/KoboShopping.html)
 
-### 修改概要
+### 🌐 專案網頁
+
+[前往 KoboShopping](https://kevin823lin.github.io/KoboShopping/KoboShopping.html)
+
+### 📝 修改概要
 
 * 修正平均計算分母
 
@@ -18,7 +22,7 @@
 
 * GitHub Copilot 提出之修改建議
 
-### 效能優化項目
+### 🚀 效能優化項目
 
 * 部分改用 ES6 語法提升效能
 
