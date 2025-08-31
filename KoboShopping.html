@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Kobo單筆滿額贈點-拆單最佳化</title>
+        <title>Kobo單筆滿額贈點-拆單最佳化/折扣計算器</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <style>
+            .no-left-padding {
+                padding-left: 0 !important;
+            }
+            .show-discount .with-discount { display: inline; }
+            .show-discount .no-discount { display: none; }
+            .hide-discount .with-discount { display: none; }
+            .hide-discount .no-discount { display: inline; }
+        </style>
     </head>
     <body class="w3-mobile w3-large">
         <div class="w3-panel">
+        <div class="w3-panel w3-pale-yellow w3-border" style="margin-bottom:12px;">
+            <b>【Kobo 9 週年慶提醒】</b><br>
+            9 週年慶門檻為 <b>NT$999</b>、<b>NT$1,899</b>。<br>
+            <span style="color:#b71c1c;">本程式計算極限約為15本書，若書本單價偏低可能無法計算組合，但仍可用來計算折扣價。</span><br>
+            9 週年慶活動詳情請見：<a href="https://kobo.08001234.xyz/KoboShoppingBuy-9hbd" target="_blank"><b>請點此</b></a>
+        </div>
             <div class="w3-card-4">
                 <header class="w3-container w3-blue">
-                    <h2>Kobo單筆滿額贈點-拆單最佳化</h2>
+                    <h2>Kobo單筆滿額贈點-拆單最佳化/折扣計算器</h2>
                 </header>
                 <div class="w3-panel">
                     <div class="w3-panel">
@@ -21,24 +36,31 @@
                         <input id="must-buys" class="w3-input w3-border" type="text" placeholder="用空白分隔">
                     </div>
                     <div class="w3-panel">
-                        <div class="w3-cell">
+                        <div class="w3-cell w3-container no-left-padding">
                             <label>C.獎勵門檻</label>
-                            <input id="target" class="w3-input w3-border" type="text" value="555" width="2em">
+                            <input id="target" class="w3-input w3-border" type="text" width="2em">
                         </div>
                         <div class="w3-cell w3-container">
-                            <label>D.購物車金額上限</label>
-                            <input id="upperBound" class="w3-input w3-border" type="text" value="1000" width="2em">
+                            <label>D.折數 (0 < x ≤ 1, 例如73折請輸入0.73)</label>
+                            <input id="discount" class="w3-input w3-border" type="text" width="2em">
+                        </div>
+                        <div class="w3-cell w3-container">
+                            <label>E.購物車金額上限</label>
+                            <input id="upperBound" class="w3-input w3-border" type="text" width="2em">
                         </div>
                     </div>
                     <div class="w3-panel">
                         <button class="w3-btn w3-blue" id="go-btn">計算 »</button>
+                        <a href="https://kobo.08001234.xyz/KoboShoppingBuy" target="_blank" class="w3-button w3-green">去購買</a>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="w3-container w3-panel" id="discount-table-panel" style="display:none;"></div>
         
         <div class="w3-container w3-panel" id="result"></div>
-        
+    
         <div class="w3-container w3-panel" class='text'>說明:
             <ol>
                 <li>本程式假設您在Kobo.com買書的作法是:
@@ -65,7 +87,7 @@
             </ol>
         </div>
         <div class="w3-container w3-panel">
-            Kobo單筆滿額贈點-拆單最佳化 <b><a href="https://github.com/kevin823lin/KoboShopping">此為Kevin修改版</a></b> <a href="https://github.com/wdshieh/wdshieh.github.io">原作者GitHub</a> <a href='https://wdshieh.github.io/KoboShopping.html'>原始版本1.1.0</a>
+            Kobo單筆滿額贈點-拆單最佳化 <b><a href="https://kobo.08001234.xyz/KoboShopping">此為Kevin修改版</a></b> <a href="https://github.com/wdshieh/wdshieh.github.io">原作者GitHub</a> <a href='https://wdshieh.github.io/KoboShopping.html'>原始版本1.1.0</a>
         </div>
     </body>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
@@ -80,43 +102,75 @@
             const cartsSums = [];
             
             $(document).ready(function() {
-                debugger;
+                // debugger;
                 const url = new URL(window.location);
-                const mustbuys = url.searchParams.get("mustbuys") || "";
-                const optionals = url.searchParams.get("optionals") || "";
-                const target = url.searchParams.get("target");
-                const upperBound = url.searchParams.get("upperBound");
+                const mustbuys = (url.searchParams.get("mustbuys") || "").trim().replace(/\s+/g, ' ');
+                const optionals = (url.searchParams.get("optionals") || "").trim().replace(/\s+/g, ' ');
+
+                const target = url.searchParams.get("target") || "1899";
+                const discount = url.searchParams.get("discount") || "0.73";
+                const upperBound = url.searchParams.get("upperBound") || "2500";
 
                 $('#must-buys').val(mustbuys);
                 $('#optionals').val(optionals);
-
                 if (target) {
                     $('#target').val(target);
                 }
-                
+                if (discount) {
+                    $('#discount').val(discount);
+                }
                 if (upperBound) {
                     $('#upperBound').val(upperBound);
                 }
-                
+
                 if ((mustbuys || optionals) && target) {
-                    _calc(mustbuys.split(' ').filter(Boolean), optionals.split(' ').filter(Boolean), Number(target), Number(upperBound));
+                    // 折扣對照表將於 _calc 內產生
+                    // 若 upperBound 有值且為有效數字，才檢查 target > upperBound
+                    if (upperBound && Number(upperBound) > 0 && Number(target) > Number(upperBound)) {
+                        $('#result').html("<div class='w3-panel w3-pale-red'><b>錯誤：</b>獎勵門檻(C) 不可大於購物車金額上限(E)。請修正後再計算。</div>");
+                    } else {
+                        _calc(mustbuys.split(' ').filter(Boolean), optionals.split(' ').filter(Boolean), Number(target), Number(discount), Number(upperBound));
+                    }
                 }
-                
-                $( "#go-btn" ).click(function() {
+
+                $("#go-btn").click(function() {
+                    // 折扣對照表將於 _calc 內產生
                     const mustbuys = $('#must-buys').val();
                     const optionals = $('#optionals').val();
                     const target = Number($('#target').val());
+                    const discount = Number($('#discount').val());
                     const upperBound = Number($('#upperBound').val());
-                    const data = { mustbuys: mustbuys, optionals: optionals, target: target, upperBound: upperBound};
+                    // 若 upperBound 有值且為有效數字，才檢查 target > upperBound
+                    if (upperBound > 0 && target > upperBound) {
+                        $('#result').html("<div class='w3-panel w3-pale-red'><b>錯誤：</b>獎勵門檻(C) 不可大於購物車金額上限(E)。請修正後再計算。</div>");
+                        return;
+                    }
+                    const data = { mustbuys: mustbuys, optionals: optionals, target: target, discount: discount, upperBound: upperBound };
                     window.location = `${window.location.pathname}?${$.param(data)}`;
                 });
             });
 
-            function _calc(mustbuys, optionals, target, upperBound) {
+            function _calc(mustbuys, optionals, target, discount, upperBound) {
+                // 先產生折扣對照表
+                _renderDiscountTableByInput(mustbuys, optionals, discount);
                 // 顯示計算開始
                 $('#result').html("<div class='w3-panel w3-pale-blue'><h3>正在計算中，請稍候...</h3></div>");
-                
-                // 延遲執行實際計算，讓UI有時間更新
+
+                // 防呆訊息暫存區
+                let warningMsg = "";
+                // 折數檢查與提醒與防呆
+                let safeDiscount = discount;
+                if (typeof discount !== 'number' || isNaN(discount)) {
+                    warningMsg += "<div class='w3-panel w3-pale-red'><b>錯誤：</b>折數輸入非數字，已忽略折數，視為1。</div>";
+                    safeDiscount = 1;
+                } else if (discount <= 0 || discount > 1) {
+                    warningMsg += "<div class='w3-panel w3-pale-red'><b>錯誤：</b>折數必須介於0與1之間(不含0)，已忽略折數，視為1。</div>";
+                    safeDiscount = 1;
+                } else if (discount !== 1) {
+                    // 合理折數才顯示提醒
+                    warningMsg += "<div class='w3-panel w3-pale-yellow'><b>提醒：</b>您設定了折數，實際結帳金額可能因小數點四捨五入與平台計算方式不同，導致與本程式計算結果略有差異。<br>　　　本程式已盡力依照Kobo目前的折扣計算方式推測公式，但若仍有誤差，請自行微調獎勵門檻。</div>";
+                }
+
                 setTimeout(() => {
                     const startTime = performance.now();
 
@@ -124,13 +178,13 @@
 
                     // 先處理必買書籍
                     mustbuys.forEach(p => {
-                        const price = isNaN(Number(p)) ? 0 : Number(p);
-                        if (price > 0) {
-                            if (price >= target) {
-                                // 如果必買書單本就超過門檻，直接建立購物車
-                                preProcessedCarts.push([{ mustbuy: true, price: price }]);
+                        const rawPrice = isNaN(Number(p)) ? 0 : Number(p);
+                        if (rawPrice > 0) {
+                            const price = _calcKoboPrice(rawPrice, safeDiscount);
+                            if (price.new.discountPrice.taxIncluded >= target) { // 如果必買書單本就超過門檻，直接建立購物車
+                                preProcessedCarts.push([{ mustbuy: true, price }]);
                             } else {
-                                books.push({ mustbuy: true, price: price });
+                                books.push({ mustbuy: true, price });
                                 solution_mustbuy_left++;
                             }
                         }
@@ -138,13 +192,13 @@
 
                     // 處理選擇性書籍
                     optionals.forEach(p => {
-                        const price = isNaN(Number(p)) ? 0 : Number(p);
-                        if (price > 0) {
-                            if (price >= target) {
-                                // 如果選擇性書籍單本就超過門檻，直接建立購物車
-                                preProcessedCarts.push([{ mustbuy: false, price: price }]);
+                        const rawPrice = isNaN(Number(p)) ? 0 : Number(p);
+                        if (rawPrice > 0) {
+                            const price = _calcKoboPrice(rawPrice, safeDiscount);
+                            if (price.new.discountPrice.taxIncluded >= target) {
+                                preProcessedCarts.push([{ mustbuy: false, price }]);
                             } else {
-                                books.push({ mustbuy: false, price: price });
+                                books.push({ mustbuy: false, price });
                             }
                         }
                     });
@@ -154,8 +208,14 @@
                         // 先按必買屬性排序，必買書優先
                         if (a.mustbuy !== b.mustbuy) return b.mustbuy ? -1 : 1;
                         // 再按價格從高到低排序
-                        return b.price - a.price;
+                        return b.price.new.discountPrice.taxIncluded - a.price.new.discountPrice.taxIncluded;
                     });
+
+                    carts.length = 0;
+                    cartsSums.length = 0;
+                    solution_carts = [];
+                    solution_rewards = -1;
+                    solution_waste = Number.MAX_SAFE_INTEGER;
 
                     _go(0, target, upperBound);
                     solution_carts = preProcessedCarts.concat(solution_carts);
@@ -171,14 +231,22 @@
                             return 0;
                     });
 
-                    let html = `<hr><div>購物車安排方式:</div>
-                                <table id='result-table' class='w3-table w3-bordered w3-striped w3-centered'>
+                    let html = `<hr><div>購物車安排方式:`;
+                    if (safeDiscount !== 1) {
+                        html += ` <label style="font-weight:normal;"><input type='checkbox' id='show-discount-detail' checked style='vertical-align:middle;margin-right:4px;'>顯示折扣金額</label>`;
+                    }
+                    let tableClass = (safeDiscount !== 1) ? 'show-discount' : '';
+                    html += `</div><table id='result-table' class='w3-table w3-bordered w3-striped w3-centered ${tableClass}'>
                                     <thread>
                                         <tr>
                                             <th>購物車</th>
-                                            <th>書價組合</th>
-                                            <th class='w3-right-align'>總價</th>
+                                            <th>(購物車)書價組合</th>`
+                                            if (safeDiscount !==1) {
+                                                html += `<th>(結帳頁)書價組合</th>`;
+                                            }
+                                            html +=  `<th class='w3-right-align'>總價</th>
                                             <th class='w3-right-align'>多餘金額</th>
+                                            <th>操作</th>
                                         </tr>
                                     </thread>
                                     <tbody>`;
@@ -196,9 +264,13 @@
                             const excess = sum - target;
                             html += `<tr>
                                 <td>${++cartCount}</td>
-                                <td>${_cartToString(cart)}</td>
-                                <td class='w3-right-align'>${sum}</td>
+                                <td>${_cartToString(cart)}</td>`
+                                if (safeDiscount !==1) {
+                                    html += `<td>${_cartToString(cart, true)}</td>`;
+                                }
+                                html += `<td class='w3-right-align'>${sum}</td>
                                 <td class='w3-right-align'>${excess}</td>
+                                <td><a href="https://kobo.08001234.xyz/KoboShoppingBuy" target="_blank" class="w3-button w3-green">去購買</a></td>
                             </tr>`;
                             totalExcess += excess ;
                         } else {
@@ -210,16 +282,24 @@
 
                     const avgExcess = cartCount ? (totalExcess / cartCount) : 0;
                     html += `<tr>
-                        <td colspan=2></td>
-                        <td class='w3-right-align'>平均多餘金額</td>
+                        <td colspan=2></td>`
+                        if (safeDiscount !==1) {
+                            html += `<td colspan=2></td>`
+                        }
+                        html += `<td class='w3-right-align'>平均多餘金額</td>
                         <td class='w3-right-align'>${Math.round(10 * avgExcess) / 10}</td>
+                        <td></td>
                     </tr>`;
-                    
+
                     if (nextTimeCart.length) {
                         html += `<tr>
                             <td>可下次再買</td>
-                            <td>${_cartToString(nextTimeCart)}</td>
-                            <td class='w3-right-align'>${nextTimeSum}</td>
+                            <td>${_cartToString(nextTimeCart)}</td>`
+                            if (safeDiscount !==1) {
+                                html += `<td>${_cartToString(nextTimeCart, true)}</td>`;
+                            }
+                            html += `<td class='w3-right-align'>${nextTimeSum}</td>
+                            <td></td>
                             <td></td>
                         </tr>`;
                     }
@@ -234,8 +314,20 @@
                         <p>${books.length + preProcessedCarts.length}本書計算完成，執行時間: ${executionTime.toFixed(2)} 秒</p>
                     </div>`;
 
-                    $('#result').html(html);
-                }, 10);
+                    // 將警告/提醒訊息加到結果最上方
+                    $('#result').html(warningMsg + html);
+
+                    // 折扣金額顯示開關功能（CSS切換）
+                    if (safeDiscount !== 1) {
+                        $('#show-discount-detail').on('change', function() {
+                            if ($(this).is(':checked')) {
+                                $('#result-table').removeClass('hide-discount').addClass('show-discount');
+                            } else {
+                                $('#result-table').removeClass('show-discount').addClass('hide-discount');
+                            }
+                        });
+                    }
+                }, 100);
             }
             
             function _go(i, target, upperBound) {
@@ -259,20 +351,20 @@
                     }
                 } else {
                     for (let j = 0; j < carts.length; j++) {
-                        if ((upperBound <= 0 || cartsSums[j] + books[i].price < upperBound) && cartsSums[j] < target) {
+                        if ((upperBound <= 0 || cartsSums[j] + books[i].price.new.discountPrice.taxIncluded < upperBound) && cartsSums[j] < target) {
                             carts[j].push(books[i]);
-                            cartsSums[j] += books[i].price;
+                            cartsSums[j] += books[i].price.new.discountPrice.taxIncluded;
                             _go(i + 1, target, upperBound);
                             carts[j].pop();
-                            cartsSums[j] -= books[i].price;
+                            cartsSums[j] -= books[i].price.new.discountPrice.taxIncluded;
                         }
                     }
-                    
-                    if (upperBound <= 0 || books[i].price < upperBound) {
+
+                    if (upperBound <= 0 || books[i].price.new.discountPrice.taxIncluded < upperBound) {
                         const newCart = [];
                         newCart.push(books[i]);
                         carts.push(newCart);
-                        cartsSums.push(books[i].price);
+                        cartsSums.push(books[i].price.new.discountPrice.taxIncluded);
                         _go(i + 1, target, upperBound);
                         carts.pop();
                         cartsSums.pop();
@@ -281,22 +373,114 @@
             }
 
             function _sum(a) {
-                return a.reduce((sum, book) => sum + book.price, 0);
+                return a.reduce((sum, book) => sum + book.price.new.discountPrice.taxIncluded, 0);
             }
 
-            function _cartToString(cart) {
+            function _cartToString(cart, isCheckout = false) {
                 const sortedBooks = [...cart].sort((a, b) => {
                     if (a.mustbuy !== b.mustbuy) return b.mustbuy ? -1 : 1;
-                    return b.price - a.price;
+                    return b.price.new.discountPrice.taxIncluded - a.price.new.discountPrice.taxIncluded;
                 });
-                
                 return sortedBooks.map((book, index) => {
-                    let str = book.price;
+                    let str = book.price.origin.taxIncluded;
+                    if (isCheckout) {
+                        str = `<span class='with-discount'>(${book.price.new.displayPrice.taxIncluded}-${book.price.discountAmount})</span><span class='no-discount'>${book.price.new.displayPrice.taxIncluded}</span>`;
+                    }
                     if (book.mustbuy) str += "*";
                     return str;
                 }).join(" + ");
             }
 
+
+
+            // 價格計算function，回傳所有過程變數
+            function _calcKoboPrice(rawPrice, discount) {
+                // Kobo新價格計算公式 (修正版)
+                const price = {
+                    origin: {
+                        taxIncluded: rawPrice,
+                        taxExcluded: null,
+                        tax: null,
+                    },
+                    discountAmount: null,
+                    new: {
+                        displayPrice: {
+                            taxIncluded: null,
+                            taxExcluded: null,
+                        },
+                        discountPrice: {
+                            taxIncluded: null,
+                            taxExcluded: null,
+                        },
+                        tax: null
+                    }
+                }
+
+                // 舊 - 未稅價
+                price.origin.taxExcluded = Math.round(price.origin.taxIncluded / 1.05);
+                // 舊 - 稅(四捨五入)
+                price.origin.tax = rawPrice - price.origin.taxExcluded;
+
+                if (discount === 1) {
+                    price.discountAmount = 0;
+                    price.new = {
+                        displayPrice: {
+                            taxIncluded: price.origin.taxIncluded,
+                            taxExcluded: price.origin.taxExcluded,
+                        },
+                        discountPrice: {
+                            taxIncluded: price.origin.taxIncluded,
+                            taxExcluded: price.origin.taxExcluded,
+                        },
+                        tax: price.origin.tax
+                    }
+                } else {
+                    // 折扣 - 折扣額(無條件捨去)
+                    price.discountAmount = Math.floor(price.origin.taxExcluded * (1 - discount));
+
+                    // 新 - 未稅價(折扣前)
+                    price.new.displayPrice.taxExcluded = price.origin.taxExcluded;
+                    // 新 - 未稅價(折扣後)
+                    price.new.discountPrice.taxExcluded = price.new.displayPrice.taxExcluded - price.discountAmount;
+                    // 新 - 稅(四捨五入)
+                    price.new.tax = Math.round(price.new.discountPrice.taxExcluded * 0.05);
+                    // 新 - 含稅價(折扣前)
+                    price.new.displayPrice.taxIncluded = price.new.displayPrice.taxExcluded + price.new.tax;
+                    // 新 - 含稅價(折扣後)
+                    price.new.discountPrice.taxIncluded = price.new.discountPrice.taxExcluded + price.new.tax;
+                }
+                return price;
+            }
+
+            // 折扣對照表：僅在折數合理時顯示，且用戶有輸入書價
+            function _renderDiscountTableByInput(mustbuys, optionals, discount) {
+                if (typeof discount !== 'number' || isNaN(discount) || discount <= 0 || discount > 1 || discount === 1) {
+                    $('#discount-table-panel').hide();
+                    return;
+                }
+                // 收集所有輸入書價
+                let allPrices = (mustbuys.concat(optionals))
+                    .map(x => Number(x))
+                    .filter(x => !isNaN(x) && x > 0);
+                // 去重、排序
+                allPrices = Array.from(new Set(allPrices)).sort((a,b) => a-b);
+                if (allPrices.length === 0) {
+                    $('#discount-table-panel').hide();
+                    return;
+                }
+                let html = `<div class='w3-panel w3-pale-blue w3-border'><b>書價折扣對照表</b> (僅供參考)<br><table class='w3-table w3-bordered w3-small' style='max-width:500px;'>`;
+                html += `<tr><th>購物車原價<br>(含稅)</th><th>結帳頁原價<br>(稅額調整後)</th><th style="color:red;">折扣金額</th><th><b>最終結帳金額<br>(含稅)</b></th></tr>`;
+                for(const price of allPrices) {
+                    const priceObj = _calcKoboPrice(price, discount);
+                    const cartPrice = priceObj.origin.taxIncluded;
+                    const checkoutPrice = priceObj.new.displayPrice.taxIncluded;
+                    const discountAmount = priceObj.discountAmount;
+                    const discountPrice = priceObj.new.discountPrice.taxIncluded;
+                    html += `<tr><td>$${cartPrice}</td><td>$${checkoutPrice}</td><td style="color:red;">-$${discountAmount}</td><td><b>$${discountPrice}</b></td></tr>`;
+                }
+                html += `</table></div>`;
+                $('#discount-table-panel').html(html).show();
+            }
         })();
     </script>
 </html>
