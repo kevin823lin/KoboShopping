@@ -360,9 +360,6 @@
                     if (remaining.length === 0) break;
                     const picked = findTargetSubsetDP(remaining, s);
                     if (!picked) break;
-                    if (s === 1900) {
-                        debugger;
-                    }
                     const cart = [];
                     const pickedSet = new Set(picked);
                     for (const i of picked) cart.push(remaining[i]);

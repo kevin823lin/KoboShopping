@@ -24,6 +24,11 @@
                 vertical-align: middle; 
                 margin-right: 10px;
             }
+            .form-row {
+                display:flex;
+                flex-wrap:wrap;
+                gap: 0px;
+            }
             @keyframes spin { 
                 0% { transform: rotate(0deg); } 
                 100% { transform: rotate(360deg); } 
@@ -50,6 +55,16 @@
                     display: flex;
                     flex-direction: column;
                     gap: 8px;
+                }
+                .mode-radio-group {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    white-space: normal !important;
+                    gap: 4px;
+                }
+                .mode-radio {
+                    display: block !important;
+                    margin-bottom: 4px !important;
                 }
             }
             /* 結果表格橫向捲動 */
@@ -81,7 +96,7 @@
                         <label><b>B.必買書價(全放這邊快很多)</b></label>
                         <input id="must-buys" class="w3-input w3-border" type="text" placeholder="用空白分隔">
                     </div>
-                    <div class="w3-panel form-row" style="display:flex;flex-wrap:wrap;gap:8px;">
+                    <div class="w3-panel form-row">
                         <div class="w3-cell w3-container no-left-padding" style="min-width:120px;flex:1;">
                             <label>C.獎勵門檻</label>
                             <input id="target" class="w3-input w3-border" type="text" width="2em">
@@ -97,24 +112,24 @@
                     </div>
                     <div id="mode-panel" class="w3-panel">
                         <label>F. 計算模式</label>
-                        <div class="w3-responsive" style="white-space:nowrap;">
-                            <label class="w3-margin-right" style="display:inline-block;">
+                        <div class="w3-responsive mode-radio-group" style="white-space:nowrap;">
+                            <label class="w3-margin-right mode-radio" style="display:inline-block;">
                                 <input type="radio" name="mode" value="dp">
                                 僅找剛好，剩餘不處理
                             </label>
-                            <label class="w3-margin-right" style="display:inline-block;">
+                            <label class="w3-margin-right mode-radio" style="display:inline-block;">
                                 <input type="radio" name="mode" value="hybrid" checked>
                                 先找剛好，剩餘再湊最佳購物車
                             </label>
-                            <label class="w3-margin-right" style="display:inline-block;">
+                            <label class="w3-margin-right mode-radio" style="display:inline-block;">
                                 <input type="radio" name="mode" value="bt">
                                 直接找最佳購物車（可能非常耗時）
                             </label>
                         </div>
                         <div id="dp-tolerance-wrap" class="w3-margin-top" style="display:none;">
                             <label>容許值（僅用於「找剛好」時）：</label>
-                            <input id="dp-tolerance" class="w3-input w3-border" type="number" min="0" step="1" placeholder="10" style="max-width:120px; display:inline-block;">
-                            <span class="w3-small w3-text-grey">會依序嘗試總和等於<b>門檻</b>到<b>門檻+容許值</b>間的購物車</span>
+                            <input id="dp-tolerance" class="w3-input w3-border" type="number" min="0" step="1" placeholder="10" style="max-width:120px; display:inline-block;"><br>
+                            <span class="w3-small w3-text-grey">會依序嘗試總和等於<b>門檻</b>～<b>門檻+容許值</b>間的購物車</span>
                         </div>
                         <div class="w3-small w3-text-grey" style="margin-top:4px;">
                             - 僅找剛好，剩餘不處理：找出「恰達門檻」的組合，剩餘不處理，速度最快。<br>
