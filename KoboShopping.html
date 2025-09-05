@@ -207,7 +207,7 @@
                 $('#dp-tolerance').val(dpTolerance);
                 const toggleTolerance = () => {
                     const m = $('input[name=mode]:checked').val();
-                    $('#dp-tolerance-wrap').toggle(m === 'dp');
+                    $('#dp-tolerance-wrap').toggle(m === 'dp' || m === 'hybrid');
                 };
                 toggleTolerance();
                 $('input[name=mode]').on('change', toggleTolerance);
