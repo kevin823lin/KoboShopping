@@ -3,10 +3,43 @@
     <head>
         <title>Kobo單筆滿額贈點-拆單最佳化/折扣計算器</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta property="fb:app_id" content="1378812893962612">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Kobo單筆滿額贈點-拆單最佳化/折扣計算器">
+        <meta property="og:title" content="Kobo單筆滿額贈點-拆單最佳化/折扣計算器">
+        <meta property="og:description" content="輸入書價、門檻與折數，快速計算最佳拆單與折扣，最大化回饋、最小化浪費。">
+        <meta property="og:url" content="https://kobo.08001234.xyz/KoboShopping">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <style>
+            html {
+                scroll-behavior: smooth;
+            }
             .no-left-padding {
                 padding-left: 0 !important;
+            }
+            /* 上方分欄：左側主卡片、右側 FB 文章（桌機併排、手機堆疊） */
+            .top-split {
+                display: flex;
+                gap: 12px;
+                align-items: flex-start;
+            }
+            .top-split .left {
+                flex: 1 1 auto;
+                min-width: 260px;
+            }
+            .top-split .right {
+                flex: 0 0 350px;
+                max-width: 100%;
+            }
+            /* .top-split .right iframe {
+            } */
+            /* 讓 FB 嵌入在 RWD 移動位置時也能維持寬度與置中 */
+            #fb-post {
+                display: block;
+                width: 350px;
+                max-width: 100%;
+                margin: auto;
+                padding-top: -12px;
             }
             .show-discount .with-discount { display: inline; }
             .show-discount .no-discount { display: none; }
@@ -32,6 +65,17 @@
             @keyframes spin { 
                 0% { transform: rotate(0deg); } 
                 100% { transform: rotate(360deg); } 
+            }
+            @media (max-width: 800px) {
+                .top-split {
+                    display: block !important;
+                }
+                .top-split .right {
+                    flex: none;
+                }
+                #fb-post {
+                    margin: 8px auto;
+                }
             }
             /* RWD 表單欄位直式排列 */
             @media (max-width: 600px) {
@@ -88,65 +132,70 @@
             <span style="color:#b71c1c;"><s id="example-link"></s></span><br>
             <span style="color:#b71c1c;">優先使用「找剛好」模式，可以快速先篩出剛好達標的組合，大幅提升計算效率。</span>
         </div>
-            <div class="w3-card-4">
-                <header class="w3-container w3-blue">
-                    <h2>Kobo單筆滿額贈點-拆單最佳化/折扣計算器</h2>
-                </header>
-                <div class="w3-panel">
-                    <div class="w3-panel">
-                        <label>A.書價</label>
-                        <input id="optionals" class="w3-input w3-border" type="text" placeholder="用空白分隔">
+            <div class="top-split">
+                    <div class="w3-card-4 left">
+                        <header class="w3-container w3-blue">
+                            <h2>Kobo單筆滿額贈點-拆單最佳化/折扣計算器</h2>
+                        </header>
+                        <div class="w3-panel">
+                            <div class="w3-panel">
+                                <label>A.書價</label>
+                                <input id="optionals" class="w3-input w3-border" type="text" placeholder="用空白分隔">
+                            </div>
+                            <div class="w3-panel">
+                                <label><b>B.必買書價(全放這邊快很多)</b></label>
+                                <input id="must-buys" class="w3-input w3-border" type="text" placeholder="用空白分隔">
+                            </div>
+                            <div class="w3-panel form-row">
+                                <div class="w3-cell w3-container no-left-padding" style="min-width:120px;flex:1;">
+                                    <label>C.獎勵門檻</label>
+                                    <input id="target" class="w3-input w3-border" type="text" width="2em">
+                                </div>
+                                <div class="w3-cell w3-container" style="min-width:120px;flex:1;">
+                                    <label>D.折數 (0 < x ≤ 1, 例如73折請輸入0.73)</label>
+                                    <input id="discount" class="w3-input w3-border" type="text" width="2em">
+                                </div>
+                                <div class="w3-cell w3-container" style="min-width:120px;flex:1;">
+                                    <label>E.購物車金額上限</label>
+                                    <input id="upperBound" class="w3-input w3-border" type="text" width="2em">
+                                </div>
+                            </div>
+                            <div id="mode-panel" class="w3-panel">
+                                <label>F. 計算模式</label>
+                                <div class="w3-responsive mode-radio-group" style="white-space:nowrap;">
+                                    <label class="w3-margin-right mode-radio" style="display:inline-block;">
+                                        <input type="radio" name="mode" value="dp">
+                                        僅找剛好，剩餘不處理
+                                    </label>
+                                    <label class="w3-margin-right mode-radio" style="display:inline-block;">
+                                        <input type="radio" name="mode" value="hybrid" checked>
+                                        先找剛好，剩餘再湊最佳購物車
+                                    </label>
+                                    <label class="w3-margin-right mode-radio" style="display:inline-block;">
+                                        <input type="radio" name="mode" value="bt">
+                                        直接找最佳購物車（可能非常耗時）
+                                    </label>
+                                </div>
+                                <div id="dp-tolerance-wrap" class="w3-margin-top" style="display:none;">
+                                    <label>容許值（僅用於「找剛好」時）：</label>
+                                    <input id="dp-tolerance" class="w3-input w3-border" type="number" min="0" step="1" placeholder="10" style="max-width:120px; display:inline-block;"><br>
+                                    <span class="w3-small w3-text-grey">會依序嘗試總和等於<b>門檻</b>～<b>門檻+容許值</b>間的購物車</span>
+                                </div>
+                                <div class="w3-small w3-text-grey" style="margin-top:4px;">
+                                    - 僅找剛好，剩餘不處理：找出「恰達門檻」的組合，剩餘不處理，速度最快。<br>
+                                    - 先找剛好，剩餘再湊最佳購物車：先找出恰達門檻的組合，再嘗試提升剩餘組合的品質。<br>
+                                    - 僅做最佳化：全面嘗試提升組合品質，可能非常耗時。
+                                </div>
+                            </div>
+                            <div class="w3-panel btn-row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                                <button class="w3-btn w3-blue" id="go-btn">計算 »</button>
+                                <a href="https://kobo.08001234.xyz/KoboShoppingBuy" target="_blank" class="w3-button w3-green">去購買（從這邊下單可以支持作者！感謝你❤️）</a>
+                                <span class="w3-small w3-text-grey" style="margin-left:8px;">每完成一筆訂單，請再點一次「去購買」</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="w3-panel">
-                        <label><b>B.必買書價(全放這邊快很多)</b></label>
-                        <input id="must-buys" class="w3-input w3-border" type="text" placeholder="用空白分隔">
-                    </div>
-                    <div class="w3-panel form-row">
-                        <div class="w3-cell w3-container no-left-padding" style="min-width:120px;flex:1;">
-                            <label>C.獎勵門檻</label>
-                            <input id="target" class="w3-input w3-border" type="text" width="2em">
-                        </div>
-                        <div class="w3-cell w3-container" style="min-width:120px;flex:1;">
-                            <label>D.折數 (0 < x ≤ 1, 例如73折請輸入0.73)</label>
-                            <input id="discount" class="w3-input w3-border" type="text" width="2em">
-                        </div>
-                        <div class="w3-cell w3-container" style="min-width:120px;flex:1;">
-                            <label>E.購物車金額上限</label>
-                            <input id="upperBound" class="w3-input w3-border" type="text" width="2em">
-                        </div>
-                    </div>
-                    <div id="mode-panel" class="w3-panel">
-                        <label>F. 計算模式</label>
-                        <div class="w3-responsive mode-radio-group" style="white-space:nowrap;">
-                            <label class="w3-margin-right mode-radio" style="display:inline-block;">
-                                <input type="radio" name="mode" value="dp">
-                                僅找剛好，剩餘不處理
-                            </label>
-                            <label class="w3-margin-right mode-radio" style="display:inline-block;">
-                                <input type="radio" name="mode" value="hybrid" checked>
-                                先找剛好，剩餘再湊最佳購物車
-                            </label>
-                            <label class="w3-margin-right mode-radio" style="display:inline-block;">
-                                <input type="radio" name="mode" value="bt">
-                                直接找最佳購物車（可能非常耗時）
-                            </label>
-                        </div>
-                        <div id="dp-tolerance-wrap" class="w3-margin-top" style="display:none;">
-                            <label>容許值（僅用於「找剛好」時）：</label>
-                            <input id="dp-tolerance" class="w3-input w3-border" type="number" min="0" step="1" placeholder="10" style="max-width:120px; display:inline-block;"><br>
-                            <span class="w3-small w3-text-grey">會依序嘗試總和等於<b>門檻</b>～<b>門檻+容許值</b>間的購物車</span>
-                        </div>
-                        <div class="w3-small w3-text-grey" style="margin-top:4px;">
-                            - 僅找剛好，剩餘不處理：找出「恰達門檻」的組合，剩餘不處理，速度最快。<br>
-                            - 先找剛好，剩餘再湊最佳購物車：先找出恰達門檻的組合，再嘗試提升剩餘組合的品質。<br>
-                            - 僅做最佳化：全面嘗試提升組合品質，可能非常耗時。
-                        </div>
-                    </div>
-                    <div class="w3-panel btn-row" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-                        <button class="w3-btn w3-blue" id="go-btn">計算 »</button>
-                        <a href="https://kobo.08001234.xyz/KoboShoppingBuy" target="_blank" class="w3-button w3-green">去購買（從這邊下單可以支持作者！感謝你❤️）</a>
-                        <span class="w3-small w3-text-grey" style="margin-left:8px;">每完成一筆訂單，請再點一次「去購買」</span>
-                    </div>
+                <div class="right">
+                    <iframe id="fb-post" src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Febook.event%2Fposts%2Fpfbid0cS62BPmY9gNnBjiFHjZzuCAaraNRXUvgwemjFcpM1B4xK53cnyfieWbsxMCMKiSel&show_text=true&width=300" height="545px" style="border:none;overflow:hidden" scrolling="no" frameborder="0"></iframe>
                 </div>
             </div>
         </div>
@@ -242,7 +291,8 @@
                     }
                 }
 
-                $("#go-btn").click(function() {
+                $("#go-btn").click(function(e) {
+                    e.preventDefault();
                     // 折扣對照表將於 _calc 內產生
                     const mustbuys = $('#must-buys').val();
                     const optionals = $('#optionals').val();
@@ -257,10 +307,95 @@
                     const selectedMode = $('input[name=mode]:checked').val() || 'hybrid';
                     const tolVal = parseInt($('#dp-tolerance').val(), 10);
                     const tolSafe = (isFinite(tolVal) && tolVal >= 0) ? tolVal : 10;
-                    const data = { mustbuys: mustbuys, optionals: optionals, target: target, discount: discount, upperBound: upperBound, mode: selectedMode };
-                    if (selectedMode === 'dp') data.dpTolerance = tolSafe;
-                    window.location = `${window.location.pathname}?${$.param(data)}`;
+
+                    // 1) 以不重新整理的方式更新網址參數
+                    const params = { mustbuys, optionals, target, discount, upperBound, mode: selectedMode };
+                    if (selectedMode === 'dp' || selectedMode === 'hybrid') params.dpTolerance = tolSafe;
+                    const newUrl = `${window.location.pathname}?${$.param(params)}`;
+                    // 使用 pushState 讓使用者可用上一頁回到上一組參數；若不希望累積歷史紀錄，可改用 replaceState
+                    try { history.pushState({ params }, '', newUrl); } catch (_) { /* 安全失敗 */ }
+
+                    // 2) 直接在本頁執行計算（不重新整理）
+                    _calc(
+                        (mustbuys || '').trim().split(' ').filter(Boolean),
+                        (optionals || '').trim().split(' ').filter(Boolean),
+                        target,
+                        discount,
+                        upperBound
+                    );
                 });
+
+                // 監聽返回/前進：依當前網址參數更新欄位並即時計算（不重新整理）
+                window.addEventListener('popstate', function() {
+                    const url = new URL(window.location);
+                    const mustbuys = (url.searchParams.get('mustbuys') || '').trim();
+                    const optionals = (url.searchParams.get('optionals') || '').trim();
+                    const target = Number(url.searchParams.get('target') || '');
+                    const discount = Number(url.searchParams.get('discount') || '');
+                    const upperBound = Number(url.searchParams.get('upperBound') || '');
+                    const modeParamRaw = (url.searchParams.get('mode') || 'hybrid').toLowerCase();
+                    const mode = ['dp','hybrid','bt'].includes(modeParamRaw) ? modeParamRaw : 'hybrid';
+                    const dpToleranceRaw = url.searchParams.get('dpTolerance');
+                    const tol = parseInt(dpToleranceRaw, 10);
+                    const tolSafe = (isFinite(tol) && tol >= 0) ? tol : 10;
+
+                    $('#must-buys').val(mustbuys);
+                    $('#optionals').val(optionals);
+                    if (!isNaN(target)) $('#target').val(target);
+                    if (!isNaN(discount)) $('#discount').val(discount);
+                    if (!isNaN(upperBound)) $('#upperBound').val(upperBound);
+                    $(`input[name=mode][value=${mode}]`).prop('checked', true);
+                    $('#dp-tolerance').val(tolSafe);
+                    const m = $('input[name=mode]:checked').val();
+                    $('#dp-tolerance-wrap').toggle(m === 'dp' || m === 'hybrid');
+
+                    if ((mustbuys || optionals) && !isNaN(target)) {
+                        _calc(
+                            mustbuys.split(' ').filter(Boolean),
+                            optionals.split(' ').filter(Boolean),
+                            Number(target),
+                            Number(discount),
+                            Number(upperBound)
+                        );
+                    } else {
+                        $('#result').empty();
+                        $('#discount-table-panel').hide();
+                    }
+                });
+
+                // RWD：將 FB iframe 在小螢幕（<=800px）時移到「書價折扣對照表」下方，桌機時移回右欄
+                (function() {
+                    const fb = document.getElementById('fb-post');
+                    if (!fb) return;
+                    const mql = window.matchMedia('(max-width: 800px)');
+                    const originalParent = fb.parentElement;
+                    const originalNext = fb.nextSibling; // 可能為 null
+                    const discountPanel = document.getElementById('discount-table-panel');
+
+                    function relocate(e) {
+                        const isMobile = e && 'matches' in e ? e.matches : mql.matches;
+                        if (isMobile) {
+                            if (discountPanel) {
+                                // 放在「書價折扣對照表」之後
+                                discountPanel.insertAdjacentElement('afterend', fb);
+                            }
+                        } else {
+                            // 移回原位（右欄）
+                            if (originalParent) {
+                                if (originalNext) {
+                                    originalParent.insertBefore(fb, originalNext);
+                                } else {
+                                    originalParent.appendChild(fb);
+                                }
+                            }
+                        }
+                    }
+
+                    // 初始與監聽視窗變化
+                    relocate();
+                    if (mql.addEventListener) mql.addEventListener('change', relocate);
+                    else if (mql.addListener) mql.addListener(relocate);
+                })();
             });
 
             function _calc(mustbuys, optionals, target, discount, upperBound) {
@@ -271,7 +406,7 @@
                 
                 const modeEl = document.getElementById('mode-panel');
                 if (modeEl) {
-                    modeEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    _scrollToElement(modeEl, 600, -3);
                 }
 
                 // 防呆訊息暫存區
@@ -286,7 +421,7 @@
                     safeDiscount = 1;
                 } else if (discount !== 1) {
                     // 合理折數才顯示提醒
-                    warningMsg += "<div class='w3-panel w3-pale-yellow'><b>提醒：</b>您設定了折數，實際結帳金額可能因小數點四捨五入與平台計算方式不同，導致與本程式計算結果略有差異。<br>　　　本程式已盡力依照Kobo目前的折扣計算方式推測公式，但若仍有誤差，請自行微調獎勵門檻。</div>";
+                    warningMsg += "<div class='w3-panel w3-pale-yellow'><b>提醒：</b>您設定了折數，本程式已盡力依照 Kobo 目前的折扣計算方式推測公式，但若仍有誤差，請自行微調獎勵門檻。</div>";
                 }
 
                 // 輸出所有輸入書價對應的 discountPrice 序列（以空白分隔）
@@ -370,7 +505,7 @@
                                     }
                                     html += `<td class='w3-right-align'>${sum}</td>
                                     <td class='w3-right-align'>${excess}</td>
-                                    <td><a href="https://kobo.08001234.xyz/KoboShoppingBuy" target="_blank" class="w3-button w3-green">去購買</a></td>
+                                    <td><a href="https://kobo.08001234.xyz/KoboShoppingBuy-cart" target="_blank" class="w3-button w3-green">去購買</a></td>
                                 </tr>`;
                                 totalExcess += excess ;
                             } else {
@@ -419,7 +554,7 @@
                         $('#result').html(warningMsg + html);
                         
                         if (modeEl) {
-                            modeEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            _scrollToElement(modeEl, 600, -3);
                         }
 
                         // 折扣金額顯示開關功能（CSS切換）
@@ -445,7 +580,7 @@
                     const tolVal2 = parseInt($('#dp-tolerance').val(), 10);
                     const tolSafe2 = (isFinite(tolVal2) && tolVal2 >= 0) ? tolVal2 : 10;
                     const payload = { mustbuys, optionals, target, safeDiscount, upperBound, mode: selectedMode };
-                    if (selectedMode === 'dp') payload.dpTolerance = tolSafe2;
+                    if (selectedMode === 'dp' || selectedMode === 'hybrid') payload.dpTolerance = tolSafe2;
                     worker.postMessage(payload);
                 } catch (e) {
                     $('#result').html(`<div class='w3-panel w3-pale-red'><b>啟動計算失敗：</b>${e.message || e.toString()}</div>`);
@@ -572,6 +707,39 @@
 
         function _getPageURL() {
             return `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+        }
+
+        // 客製化平滑捲動（可調時長），避免內建 scrollIntoView 無法設定時間
+        function _scrollToElement(el, duration = 1000, offset = 0) {
+            try {
+                const rect = el.getBoundingClientRect();
+                const targetY = Math.max(0, rect.top + window.pageYOffset + offset);
+                _smoothScrollToY(targetY, duration);
+            } catch (_) {
+                // 萬一失敗則退回原生
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function _smoothScrollToY(targetY, duration = 1000) {
+            const startY = window.pageYOffset || document.documentElement.scrollTop || 0;
+            const delta = targetY - startY;
+            if (!isFinite(delta) || Math.abs(delta) < 1 || duration <= 0) {
+                window.scrollTo({ top: targetY, behavior: 'auto' });
+                return;
+            }
+            const start = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+            const easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+            function step() {
+                const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+                const t = Math.min(1, (now - start) / duration);
+                const eased = easeInOutCubic(t);
+                const y = Math.round(startY + delta * eased);
+                window.scrollTo({ top: y, behavior: 'auto' });
+                if (t < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
         }
     </script>
 </html>
