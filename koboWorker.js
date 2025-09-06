@@ -157,23 +157,7 @@
         let bestRewards = -1;
         let bestWaste = INF;
         let bestMustLeft = INF;
-
-        function sumCart(cart) {
-            return cart.reduce((s, b) => s + b.price.new.discountPrice.taxIncluded, 0);
-        }
-        function evaluateCarts(carts, target) {
-            let rewards = 0, waste = 0, mustbuy_left = 0;
-            for (const cart of carts) {
-                const s = sumCart(cart);
-                if (s >= target) {
-                    rewards++;
-                    waste += s - target;
-                } else {
-                    mustbuy_left += cart.reduce((c, b) => c + (b.mustbuy ? 1 : 0), 0);
-                }
-            }
-            return { rewards, waste, mustbuy_left };
-        }
+        
         function considerSolution() {
             const { rewards, waste, mustbuy_left } = evaluateCarts(carts, target);
             const better =
@@ -357,7 +341,7 @@
             for (let s = target; s <= maxS; s++) {
                 let guard = 0;
                 while (guard++ < 256) {
-                    if (remaining.length === 0) break;
+                    if (sumCart(remaining) < s) break; // 剩餘無法再組成一車
                     const picked = findTargetSubsetDP(remaining, s);
                     if (!picked) break;
                     const cart = [];
@@ -368,7 +352,7 @@
                     for (let i = 0; i < remaining.length; i++) if (!pickedSet.has(i)) kept.push(remaining[i]);
                     remaining = kept;
                 }
-                if (remaining.length === 0) break;
+                if (sumCart(remaining) < target) break;
             }
         }
 
