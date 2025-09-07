@@ -10,6 +10,7 @@
         <meta property="og:description" content="輸入書價、門檻與折數，快速計算最佳拆單與折扣，最大化回饋、最小化浪費。">
         <meta property="og:url" content="https://kobo.08001234.xyz/KoboShopping">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v23.0&appId=1378812893962612"></script>
         <style>
             html {
                 scroll-behavior: smooth;
@@ -31,14 +32,11 @@
                 flex: 0 0 350px;
                 max-width: 100%;
             }
-            /* .top-split .right iframe {
-            } */
             /* 讓 FB 嵌入在 RWD 移動位置時也能維持寬度與置中 */
-            #fb-post {
-                display: block;
-                width: 350px;
+            .fb-post {
+                display: block !important;
+                width: 350px !important;
                 max-width: 100%;
-                margin: auto;
                 padding-top: -12px;
             }
             .show-discount .with-discount { display: inline; }
@@ -73,7 +71,7 @@
                 .top-split .right {
                     flex: none;
                 }
-                #fb-post {
+                .fb-post {
                     margin: 8px auto;
                 }
             }
@@ -195,7 +193,7 @@
                         </div>
                     </div>
                 <div class="right">
-                    <iframe id="fb-post" src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Febook.event%2Fposts%2Fpfbid0cS62BPmY9gNnBjiFHjZzuCAaraNRXUvgwemjFcpM1B4xK53cnyfieWbsxMCMKiSel&show_text=true&width=300" height="545px" style="border:none;overflow:hidden" scrolling="no" frameborder="0"></iframe>
+                    <div class="fb-post" data-href="https://www.facebook.com/ebook.event/posts/122102792498992199" data-width="300"></div>
                 </div>
             </div>
         </div>
@@ -365,7 +363,7 @@
 
                 // RWD：將 FB iframe 在小螢幕（<=800px）時移到「書價折扣對照表」下方，桌機時移回右欄
                 (function() {
-                    const fb = document.getElementById('fb-post');
+                    const fb = document.getElementsByClassName('fb-post')?.[0];
                     if (!fb) return;
                     const mql = window.matchMedia('(max-width: 800px)');
                     const originalParent = fb.parentElement;
