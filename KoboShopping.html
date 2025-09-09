@@ -46,8 +46,17 @@
                 display: block !important;
                 width: 350px !important;
                 max-width: 100%;
-                padding-top: -12px;
+                /* 用 margin 置中（桌機與手機皆適用；手機下方會覆蓋成 margin: 8px auto） */
+                margin-left: auto;
+                margin-right: auto;
             }
+            /* Facebook SDK 可能加入的 wrapper 類別，避免其 display/width 影響置中 */
+            .fb_iframe_widget,
+            .fb_iframe_widget_fluid {
+                max-width: 100% !important;
+            }
+            /* 讓右欄內容水平置中（桌機） */
+            .top-split .right { text-align: center; }
             .show-discount .with-discount { display: inline; }
             .show-discount .no-discount { display: none; }
             .hide-discount .with-discount { display: none; }
@@ -79,6 +88,7 @@
                 }
                 .top-split .right {
                     flex: none;
+                    text-align: initial; /* 避免影響其他文字 */
                 }
                 .fb-post {
                     margin: 8px auto;
@@ -202,7 +212,7 @@
                         </div>
                     </div>
                 <div class="right">
-                    <div class="fb-post" data-href="https://www.facebook.com/ebook.event/posts/122102792498992199" data-width="300"></div>
+                    <!-- {{fb-post}} -->
                 </div>
             </div>
         </div>
@@ -370,38 +380,53 @@
                     }
                 });
 
-                // RWD：將 FB iframe 在小螢幕（<=800px）時移到「書價折扣對照表」下方，桌機時移回右欄
+                // RWD：支援多個 FB 貼文；小螢幕（<=800px）時全部移到「書價折扣對照表」下方，桌機時移回原位（依原順序）
                 (function() {
-                    const fb = document.getElementsByClassName('fb-post')?.[0];
-                    if (!fb) return;
                     const mql = window.matchMedia('(max-width: 800px)');
-                    const originalParent = fb.parentElement;
-                    const originalNext = fb.nextSibling; // 可能為 null
                     const discountPanel = document.getElementById('discount-table-panel');
+                    const rightDiv = document.querySelector('.top-split .right');
+                    const originals = [];
+                    // 初始化：為每個 .fb-post 建立占位並加上穩定索引
+                    const initialPosts = Array.from(document.getElementsByClassName('fb-post'));
+                    initialPosts.forEach((el, idx) => {
+                        el.setAttribute('data-fb-idx', String(idx));
+                        const placeholder = document.createComment(`fb-post-placeholder-${idx}`);
+                        if (el.parentNode) {
+                            el.parentNode.insertBefore(placeholder, el);
+                        }
+                        originals.push({ idx, placeholder });
+                    });
 
                     function relocate(e) {
                         const isMobile = e && 'matches' in e ? e.matches : mql.matches;
                         if (isMobile) {
-                            if (discountPanel) {
-                                // 放在「書價折扣對照表」之後
-                                discountPanel.insertAdjacentElement('afterend', fb);
+                            if (!discountPanel) return;
+                            const posts = Array.from(document.querySelectorAll('.fb-post[data-fb-idx]'));
+                            // 為維持原順序，採逆序插入在折扣表之後
+                            for (let i = posts.length - 1; i >= 0; i--) {
+                                const post = posts[i];
+                                discountPanel.insertAdjacentElement('afterend', post);
                             }
                         } else {
-                            // 移回原位（右欄）
-                            if (originalParent) {
-                                if (originalNext) {
-                                    originalParent.insertBefore(fb, originalNext);
-                                } else {
-                                    originalParent.appendChild(fb);
+                            // 還原至各自占位
+                            for (const { idx, placeholder } of originals) {
+                                const post = document.querySelector(`.fb-post[data-fb-idx="${idx}"]`);
+                                if (post && placeholder.parentNode) {
+                                    placeholder.parentNode.insertBefore(post, placeholder.nextSibling);
                                 }
                             }
                         }
                     }
 
                     // 初始與監聽視窗變化
-                    relocate();
-                    if (mql.addEventListener) mql.addEventListener('change', relocate);
-                    else if (mql.addListener) mql.addListener(relocate);
+                    if (initialPosts.length > 0) {
+                        relocate();
+                        if (mql.addEventListener) mql.addEventListener('change', relocate);
+                        else if (mql.addListener) mql.addListener(relocate);
+                    } else {
+                        // 若沒有任何 fb-post，則隱藏右側欄位
+                        if (rightDiv) rightDiv.style.display = 'none';
+                    }
                 })();
             });
 
