@@ -143,10 +143,9 @@
     <body class="w3-mobile w3-large">
         <div class="w3-panel">
         <div class="w3-panel w3-pale-yellow w3-border" style="margin-bottom:12px;">
-            <b>【Kobo 9 週年慶提醒】</b><br>
-            9 週年慶門檻為 <b>NT$999</b>、<b>NT$1,899</b>，活動詳情請見：<a href="https://fb.com/ebook.event/posts/pfbid0cJSWD2joxznrQMEowCLFEYZsL9LduaFTsrt5KwdgHsNM55osazTRedhMofRp1U3Yl" target="_blank"><b>攻略</b></a>、<a href="https://kobo.08001234.xyz/KoboShoppingBuy-9hbd" target="_blank"><b>活動主頁</b></a><br>
-            <span style="color:#b71c1c;"><s>本程式計算極限約為25本書</s>，書本單價越大算越快，若書本單價偏低可能無法計算組合，但仍可用來計算折扣價。</span><br>
-            <span style="color:#b71c1c;"><s id="example-link"></s></span><br>
+            <b>【提醒】</b><br>
+            <span style="color:#b71c1c;">書本單價越大算越快，若書本單價偏低可能無法計算組合，但仍可用來計算折扣價。</span><br>
+            <!-- <span style="color:#b71c1c;"><s id="example-link"></s></span><br> -->
             <span style="color:#b71c1c;">優先使用「找剛好」模式，可以快速先篩出剛好達標的組合，大幅提升計算效率。</span>
         </div>
             <div class="top-split">
@@ -262,9 +261,9 @@
                 const mustbuys = (url.searchParams.get("mustbuys") || "").trim().replace(/\s+/g, ' ');
                 const optionals = (url.searchParams.get("optionals") || "").trim().replace(/\s+/g, ' ');
 
-                const target = url.searchParams.get("target") || "1899";
-                const discount = url.searchParams.get("discount") || "0.73";
-                const upperBound = url.searchParams.get("upperBound") || "2150";
+                const target = url.searchParams.get("target") || "555";
+                const discount = url.searchParams.get("discount") || "1";
+                const upperBound = url.searchParams.get("upperBound") || "600";
                 const modeParamRaw = (url.searchParams.get("mode") || "hybrid").toLowerCase();
                 let modeParam = modeParamRaw;
                 if (!["dp","hybrid","bt"].includes(modeParam)) modeParam = 'hybrid';
@@ -274,7 +273,7 @@
                 if (!isFinite(dpTolerance) || dpTolerance < 0) dpTolerance = 10;
 
                 const exampleLink = document.getElementById("example-link");
-                exampleLink.innerHTML = `範例：<a href="${_getPageURL()}?mustbuys=236%20467%20645%20243%20480%20136%20591%20159%20334%20312%20136%20591%20159%20334%20312%20135%2067%2064%2091%20159%2033%2034%20312%20136%20591&optionals=&target=1899&discount=0.73&upperBound=2500" target="_blank">高單價25本-約25秒</a> <a href="${_getPageURL()}?mustbuys=100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300&optionals=&target=1899&discount=0.73&upperBound=2500" target="_blank">低單價25本-約180秒</a> <a href="${_getPageURL()}?mustbuys=100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300&optionals=&target=1899&discount=0.73&upperBound=2500" target="_blank">低單價26本-約800秒</a>`;
+                // exampleLink.innerHTML = `範例：<a href="${_getPageURL()}?mustbuys=236%20467%20645%20243%20480%20136%20591%20159%20334%20312%20136%20591%20159%20334%20312%20135%2067%2064%2091%20159%2033%2034%20312%20136%20591&optionals=&target=1899&discount=0.73&upperBound=2500" target="_blank">高單價25本-約25秒</a> <a href="${_getPageURL()}?mustbuys=100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300&optionals=&target=1899&discount=0.73&upperBound=2500" target="_blank">低單價25本-約180秒</a> <a href="${_getPageURL()}?mustbuys=100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300%20300%20100%20100%20200%20200%20300&optionals=&target=1899&discount=0.73&upperBound=2500" target="_blank">低單價26本-約800秒</a>`;
 
                 $('#must-buys').val(mustbuys);
                 $('#optionals').val(optionals);
