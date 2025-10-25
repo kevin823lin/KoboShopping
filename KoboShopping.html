@@ -183,11 +183,25 @@
             overflow-x: auto;
             width: 100%;
         }
+
+        .subtle-info {
+            background-color: #f1f1f1; /* 淺灰色背景 */
+            font-size: small;          /* 較小字體 */
+            color: #777;              /* 較淺的文字顏色 */
+        }
+        .subtle-info a {
+            color: #555; /* 連結顏色也調暗 */
+        }
     </style>
 </head>
 
 <body class="w3-mobile w3-large">
     <div class="w3-panel">
+        <div class="w3-panel w3-panel subtle-info">
+            Kobo單筆滿額贈點-拆單最佳化/折扣計算器 <a href="https://kobo.08001234.xyz/KoboShopping">此為Kevin修改版</a> <a
+                href="https://github.com/wdshieh/wdshieh.github.io">原作者GitHub</a> <a
+                href='https://wdshieh.github.io/KoboShopping.html'>原始版本1.1.0（有原作者 Facebook）</a>
+        </div>
         <div class="w3-panel w3-pale-yellow w3-border" style="margin-bottom:12px;">
             <b>【提醒】</b><br>
             <span style="color:#b71c1c;">書本單價越大算越快，若書本單價偏低可能無法計算組合，但仍可用來計算折扣價。</span><br>
@@ -292,11 +306,6 @@
             <li>本程式以JavaScript撰寫，存放在GitHub的靜態頁面，所有運算皆在使用者瀏覽器中執行，而且不會傳輸任何資料，請放心使用。</li>
             <li>[新功能 2020-08-17] D.購物車金額上限: 若您希望控制「多餘金額」不要太多，會浪費較多金額的書可以等下次再買，就可以設定購物車金額上限。注意: 這有可能造成必買書價出現在「下次再買」名單中
         </ol>
-    </div>
-    <div class="w3-container w3-panel">
-        Kobo單筆滿額贈點-拆單最佳化 <b><a href="https://kobo.08001234.xyz/KoboShopping">此為Kevin修改版</a></b> <a
-            href="https://github.com/wdshieh/wdshieh.github.io">原作者GitHub</a> <a
-            href='https://wdshieh.github.io/KoboShopping.html'>原始版本1.1.0</a>
     </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
