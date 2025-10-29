@@ -321,9 +321,9 @@
             const mustbuys = (url.searchParams.get("mustbuys") || "").trim().replace(/\s+/g, ' ');
             const optionals = (url.searchParams.get("optionals") || "").trim().replace(/\s+/g, ' ');
 
-            const target = url.searchParams.get("target") || "555";
-            const discount = url.searchParams.get("discount") || "1";
-            const upperBound = url.searchParams.get("upperBound") || "600";
+            const target = url.searchParams.get("target") || "336";
+            const discount = url.searchParams.get("discount") || "0.75";
+            const upperBound = url.searchParams.get("upperBound") || "500";
             const modeParamRaw = (url.searchParams.get("mode") || "hybrid").toLowerCase();
             let modeParam = modeParamRaw;
             if (!["dp", "hybrid", "bt"].includes(modeParam)) modeParam = 'hybrid';
